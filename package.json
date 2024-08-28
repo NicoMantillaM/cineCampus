@@ -1,0 +1,16 @@
+{
+    "name": "cinecampus",
+    "version": "1.0.0",
+    "main": "app.js",
+    "type": "commonjs",
+    "scripts": {
+        "dev": "node --env-file .env --watch app.js"
+    },
+    "keywords": [],
+    "author": "Nicoll Zarai Mantilla Miranda",
+    "license": "ISC",
+    "dependencies": {
+        "mongodb": "^6.8.0"
+    },
+    "description": ""
+}
