@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient } = require("mongodb");
 /**
  * Clase para manejar la conexión a la base de datos MongoDB
  */
@@ -24,10 +24,10 @@ module.exports = class connect {
     constructor(){
         // Si ya existe una instancia, retorna esa instancia
         if(connect.instanceConnect) return connect.instanceConnect;
-        
+
         // Asigna esta instancia a la propiedad estática
         connect.instanceConnect = this;
-        
+
         // Retorna la instancia actual
         return connect.instanceConnect;
     }
@@ -37,14 +37,14 @@ module.exports = class connect {
      */
     async open(){
         // Construye la URI de conexión usando variables de entorno
-            const uri = `${process.env.MONGO_PROTOCOLO}${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}`
+            const uri = `${process.env.MONGO_PROTOCOLO}${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`
             try{
             // Crea una nueva instancia de MongoClient con la URI
             this.connection = new MongoClient(uri);
-            
+
             // Establece la conexión con la base de datos
             await this.connection.connect();
-            
+
             // Asigna la base de datos específica a la propiedad db
             this.db = this.connection.db(process.env.MONGO_DB_NAME);
         } catch (error){
