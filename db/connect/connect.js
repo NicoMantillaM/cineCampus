@@ -38,7 +38,6 @@ module.exports = class connect {
     async open(){
         // Construye la URI de conexión usando variables de entorno
             const uri = `${process.env.MONGO_PROTOCOLO}${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`
-            console.log(uri)
             try{
             // Crea una nueva instancia de MongoClient con la URI
             this.connection = new MongoClient(uri);
