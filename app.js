@@ -13,17 +13,17 @@ const reserva = require('./js/module/reserva');
 // obj.getPelicula(id_pelicula).then(res=>{console.log(res)})
 
 
-// let obj = new boleta();
-// let id_boleta = ('66ce54128588aa1bd07de77e') 
+let obj = new boleta();
+let id_boleta = ('66ce54128588aa1bd07de77e') 
 
 
-// let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
-// let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
-// let id_usuario = ('66cfe4288d26b5da40f46c1c') 
-// let id_reserva = null
-// let metodo_pago = ("tarjeta de credito")
+let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
+let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
+let id_usuario = ('66cfe4288d26b5da40f46c1b') 
+let id_reserva = null
+let metodo_pago = ("tarjeta de credito")
 
-// obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
+obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
 
 
 
@@ -34,7 +34,7 @@ const reserva = require('./js/module/reserva');
 // obj.consultarDisponibilidadAsientos(id_sala, id_horario_funcion).then(res=>{console.log(res)})
 
 
-let obj = new reserva();
+// let obj = new reserva();
 // let id_usuario = ("66cfe4288d26b5da40f46c1e")
 // let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
 // let id_horario_funcion = ("66cff2dc8d26b5da40f46c3d") 
@@ -42,7 +42,7 @@ let obj = new reserva();
 // obj.createReserva( id_usuario, asientos, id_horario_funcion).then(res=>{console.log(res)})  
 
 
-let id_reserva = ("66d560f7b70f5e9cdd4a73a8")
-let id_usuario = ("66cfe4288d26b5da40f46c1e")
+// let id_reserva = ("66d560f7b70f5e9cdd4a73a8")
+// let id_usuario = ("66cfe4288d26b5da40f46c1e")
 
-obj.cancelarReserva( id_reserva, id_usuario).then(res=>{console.log(res)})  
+// obj.cancelarReserva( id_reserva, id_usuario).then(res=>{console.log(res)})  
