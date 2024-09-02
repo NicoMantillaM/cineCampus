@@ -2,7 +2,7 @@ const funcion = require('./js/module/horario_funcion');
 const pelicula = require('./js/module/pelicula');
 const boleta = require('./js/module/boleta');
 const asiento = require('./js/module/asiento');
-
+const reserva = require('./js/module/reserva');
 
 // let obj = new funcion();
 // obj.getFuncionCartelera().then(res=>{console.log(res)})
@@ -27,8 +27,16 @@ const asiento = require('./js/module/asiento');
 
 
 
-let obj = new asiento();
-let id_sala = ("66cfeee58d26b5da40f46c2b")
+// let obj = new asiento();
+// let id_sala = ("66cfeee58d26b5da40f46c2b")
+// let id_horario_funcion = ("66cff2dc8d26b5da40f46c3d") 
+
+// obj.consultarDisponibilidadAsientos(id_sala, id_horario_funcion).then(res=>{console.log(res)})
+
+
+let obj = new reserva();
+let id_usuario = ("66cfe4288d26b5da40f46c1e")
+let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
 let id_horario_funcion = ("66cff2dc8d26b5da40f46c3d") 
 
-obj.consultarDisponibilidadAsientos(id_sala, id_horario_funcion).then(res=>{console.log(res)})
+obj.createReserva( id_usuario, asientos, id_horario_funcion).then(res=>{console.log(res)})  
