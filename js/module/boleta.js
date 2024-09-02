@@ -105,18 +105,6 @@ module.exports = class boleta extends connect {
             // Calcular el precio total de la compra
             let precio_total = asientosSeleccionados.reduce((total, asiento) => total + asiento.precio, 0);
 
-
-            // Verificar si el usuario tiene una tarjeta VIP activa
-            const tarjetaVIP = await collectionTarjeta.findOne({
-                id_usuario: new ObjectId(id_usuario),
-                estado: 'activa'
-            });
-
-            if (tarjetaVIP) {
-                const descuento = 0.15;
-                precio_total = precio_total * (1 - descuento);
-            }
-
             // Verificar si el usuario tiene una tarjeta VIP activa y aplicar descuento
             const tarjetaVIP = await collectionTarjeta.findOne({
                 id_usuario: new ObjectId(id_usuario),
