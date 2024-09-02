@@ -70,4 +70,49 @@ module.exports = class reserva extends connect {
             console.log(error);
         }
     }
+    async cancelarReserva(id_reserva, id_usuario) {
+        await this.open();
+
+        try {
+            this.collectionReserva = this.db.collection('reserva');
+            const collectionAsiento = this.db.collection('asiento');
+
+            // Verificar la existencia de la reserva y que pertenece al usuario
+            const reserva = await this.collectionReserva.findOne({
+                _id: new ObjectId(id_reserva),
+                id_usuario: new ObjectId(id_usuario)
+            });
+
+            if (!reserva) {
+                throw new Error('La reserva proporcionada no existe o no pertenece al usuario.');
+            }
+
+            if (reserva.estado === 'cancelado') {
+                throw new Error('La reserva ya ha sido cancelada.');
+            }
+
+            // Actualizar el estado de la reserva a "cancelado"
+            await this.collectionReserva.updateOne(
+                { _id: new ObjectId(id_reserva) },
+                { $set: { estado: 'cancelado' } }
+            );
+
+            // Actualizar la disponibilidad de los asientos a "disponible"
+            await collectionAsiento.updateMany(
+                { _id: { $in: reserva.asientos } },
+                { $set: { disponibilidad: 'disponible' } }
+            );
+
+            this.connection.close();
+            return { message: 'Reserva cancelada con éxito' };
+
+        } catch (error) {
+            if (this.connection) {
+                await this.connection.close();
+            }
+            console.log(error);
+        }
+    }
 }
+
+

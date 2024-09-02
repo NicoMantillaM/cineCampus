@@ -35,8 +35,14 @@ const reserva = require('./js/module/reserva');
 
 
 let obj = new reserva();
-let id_usuario = ("66cfe4288d26b5da40f46c1e")
-let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
-let id_horario_funcion = ("66cff2dc8d26b5da40f46c3d") 
+// let id_usuario = ("66cfe4288d26b5da40f46c1e")
+// let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
+// let id_horario_funcion = ("66cff2dc8d26b5da40f46c3d") 
 
-obj.createReserva( id_usuario, asientos, id_horario_funcion).then(res=>{console.log(res)})  
+// obj.createReserva( id_usuario, asientos, id_horario_funcion).then(res=>{console.log(res)})  
+
+
+let id_reserva = ("66d560f7b70f5e9cdd4a73a8")
+let id_usuario = ("66cfe4288d26b5da40f46c1e")
+
+obj.cancelarReserva( id_reserva, id_usuario).then(res=>{console.log(res)})  
