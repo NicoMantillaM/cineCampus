@@ -223,6 +223,83 @@ obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_p
 
 ### Manejo de errores
 
+En caso de que ocurra un error durante la compra, el método `comprarBoleta` lanzará un error con un mensaje descriptivo. Asegúrate de manejar estos errores adecuadamente en tu aplicación.## Clase `boleta`
+
+La clase `boleta` es una extensión de la clase `connect` que permite gestionar la compra de boletos para funciones de cine. A través de esta clase, puedes validar la existencia de funciones, usuarios y asientos, además de procesar la compra aplicando descuentos si corresponde.
+
+### Métodos
+
+#### `comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)`
+
+Este método realiza la compra de una boleta para una función de cine.
+
+##### Parámetros
+
+- `id_horario_funcion` (string): El ID del horario de la función.
+- `asientos` (Array): Un array con los IDs de los asientos seleccionados.
+- `id_usuario` (string): El ID del usuario que está comprando la boleta.
+- `id_reserva` (string, opcional): El ID de la reserva (puede ser null si no se utiliza).
+- `metodo_pago` (string): El método de pago utilizado para la compra.
+
+##### Retorno
+
+Este método retorna un objeto que incluye:
+
+- `mensaje` (string): Un mensaje de confirmación de la compra.
+- `detalles` (Object): Un objeto con los detalles de la compra, incluyendo:
+  - `id_boleta` (ObjectId): El ID de la boleta generada.
+  - `fecha_de_compra` (string): La fecha de compra en formato `dd/mm/yyyy`.
+  - `usuario` (string): El ID del usuario que realizó la compra.
+  - `asientos` (Array): Los IDs de los asientos comprados.
+  - `horario_de_la_funcion` (string): El ID del horario de la función.
+  - `metodo_de_pago` (string): El método de pago utilizado.
+  - `precio_total` (number): El precio total de la compra.
+
+##### Ejemplo de uso
+
+```
+//  Importar la clase `boleta`
+const boleta = require('./path_to_boleta_class/boleta');
+
+// Crear una instancia de la clase `boleta`
+let obj = new boleta();
+
+// Definir los datos necesarios para la compra de la boleta
+let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d');
+let asientos = ['66d1bbcbcbb9384d08cf2b8e'];
+let id_usuario = ('66cfe4288d26b5da40f46c1b');
+let id_reserva = null;
+let metodo_pago = ("tarjeta de credito");
+
+//  Realizar la compra de la boleta y manejar la respuesta
+obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
+  .then(res => {
+    console.log(res);
+  })
+  .catch(err => {
+    console.error(err);
+  });
+```
+
+### Ejemplo de respuesta esperada
+
+```
+{
+  "mensaje": "Boleta comprada con éxito",
+  "detalles": {
+    "id_boleta": "ObjectId('66ce54128588aa1bd07de77e')",
+    "fecha_de_compra": "03/09/2024",
+    "usuario": "66cfe4288d26b5da40f46c1b",
+    "asientos": ["66d1bbcbcbb9384d08cf2b8e"],
+    "horario_de_la_funcion": "66cff2dc8d26b5da40f46c3d",
+    "metodo_de_pago": "tarjeta de credito",
+    "precio_total": 50000
+  }
+}
+```
+
+### Manejo de errores
+
 En caso de que ocurra un error durante la compra, el método `comprarBoleta` lanzará un error con un mensaje descriptivo. Asegúrate de manejar estos errores adecuadamente en tu aplicación.
 
 ### Clase `funcion`
