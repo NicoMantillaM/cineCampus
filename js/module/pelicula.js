@@ -14,7 +14,7 @@ module.exports = class pelicula extends connect{
         try {
             
             this.colletionPelicula = this.db.collection('pelicula');
-            let res = await this.colletionPelicula.findOne({ _id: new ObjectId(id_pelicula)});
+            const res = await this.colletionPelicula.findOne({ _id: new ObjectId(id_pelicula)});
 
             if (!res) {
                 throw new Error("La pelicula que ingreso no existe");
