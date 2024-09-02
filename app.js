@@ -3,6 +3,8 @@ const pelicula = require('./js/module/pelicula');
 const boleta = require('./js/module/boleta');
 const asiento = require('./js/module/asiento');
 const reserva = require('./js/module/reserva');
+const usuario = require('./js/module/usuario');
+
 
 // let obj = new funcion();
 // obj.getFuncionCartelera().then(res=>{console.log(res)})
@@ -13,17 +15,17 @@ const reserva = require('./js/module/reserva');
 // obj.getPelicula(id_pelicula).then(res=>{console.log(res)})
 
 
-let obj = new boleta();
-let id_boleta = ('66ce54128588aa1bd07de77e') 
+// let obj = new boleta();
+// let id_boleta = ('66ce54128588aa1bd07de77e') 
 
 
-let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
-let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
-let id_usuario = ('66cfe4288d26b5da40f46c1b') 
-let id_reserva = null
-let metodo_pago = ("tarjeta de credito")
+// let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
+// let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
+// let id_usuario = ('66cfe4288d26b5da40f46c1b') 
+// let id_reserva = null
+// let metodo_pago = ("tarjeta de credito")
 
-obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
+// obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
 
 
 
@@ -46,3 +48,28 @@ obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_p
 // let id_usuario = ("66cfe4288d26b5da40f46c1e")
 
 // obj.cancelarReserva( id_reserva, id_usuario).then(res=>{console.log(res)})  
+
+
+let obj = new usuario();
+let id_usuario = ("66d6160f545ff2532832f401")
+// let nombre = ("Juan")
+// let apellido = ("Perez")
+// let email = ("juanpeo@example.com")
+// let nickname = ("juanpe")
+// let telefono = ("3123456790")
+// let rol = ("vip")
+
+// obj.createUser(nombre, apellido, email, nickname, telefono, rol).then(res=>{console.log(res)})
+
+
+let updateData =
+{
+    nombre: "guillermo",
+    apellido: "Perez",
+    email: "juanpeo@example.com",
+    nickname: "juatito",
+    telefono: "3123456790",
+    rol: "vip" 
+};
+
+obj.updateUser(id_usuario,updateData).then(res=>{console.log(res)})
