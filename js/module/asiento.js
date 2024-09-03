@@ -53,4 +53,57 @@ module.exports = class asiento extends connect{
             console.log(error); 
         }
     }
+
+    async addAsiento(nuevoAsiento) {
+        await this.open();
+        try {
+            const collectionSala = this.db.collection('sala');
+            const collectionHorarioFuncion = this.db.collection('horario_funcion');
+            this.collectionAsiento = this.db.collection('asiento');
+            nuevoAsiento.id_sala = new ObjectId(nuevoAsiento.id_sala);
+            nuevoAsiento.id_horario_funcion = new ObjectId(nuevoAsiento.id_horario_funcion);
+
+            const sala = await collectionSala.findOne({ _id: nuevoAsiento.id_sala });
+            if (!sala) {
+                throw new Error('La sala especificada no existe.');
+            }
+
+            const horarioFuncion = await collectionHorarioFuncion.findOne({ _id: nuevoAsiento.id_horario_funcion });
+            if (!horarioFuncion) {
+                throw new Error('El horario de función especificado no existe.');
+            }
+
+            const funcion = await collectionHorarioFuncion.findOne({
+                _id: nuevoAsiento.id_horario_funcion,
+                id_sala: nuevoAsiento.id_sala
+            });
+
+            if (!funcion) {
+                throw new Error('El id_sala no coincide con el id_horario_funcion.');
+            }
+
+            const asientoExistente = await this.collectionAsiento.findOne({
+                id_sala: nuevoAsiento.id_sala,
+                id_horario_funcion: nuevoAsiento.id_horario_funcion,
+                lugar: nuevoAsiento.lugar
+            });
+
+            if (asientoExistente) {
+                throw new Error('El asiento ya existe para esa función.');
+            }
+            const res = await this.collectionAsiento.insertOne(nuevoAsiento);
+            if (!res.insertedId) {
+                throw new Error('No se pudo agregar el asiento.');
+            }
+
+            await this.connection.close();
+            return { message: "Asiento agregado con éxito" };
+
+        } catch (error) {
+            if (this.connection) {
+                await this.connection.close();
+            }
+            console.error(error);
+        }
+    }
 }
