@@ -8,9 +8,17 @@ const tarjeta = require('./js/module/tarjeta');
 const sala = require('./js/module/sala');
 
 
-// let obj = new funcion();
+let obj = new funcion();
 // obj.getFuncionCartelera().then(res=>{console.log(res)})
 
+let nuevaFuncion = {
+    id_sala: "66cfeee58d26b5da40f46c26",
+    fecha_proyeccion: "18/09/2024",
+    hora_inicio: "13:20",
+    hora_fin: "14:50",
+    id_pelicula: "66cfec618d26b5da40f46c1f"
+}
+obj.addFuncion(nuevaFuncion).then(res=>{console.log(res)})
 
 // let obj = new pelicula();
 // let id_pelicula = ("66cfec618d26b5da40f46c21")
