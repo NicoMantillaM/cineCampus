@@ -5,6 +5,7 @@ const asiento = require('./js/module/asiento');
 const reserva = require('./js/module/reserva');
 const usuario = require('./js/module/usuario');
 const tarjeta = require('./js/module/tarjeta');
+const sala = require('./js/module/sala');
 
 
 // let obj = new funcion();
@@ -76,11 +77,28 @@ const tarjeta = require('./js/module/tarjeta');
 // obj.updateUser(id_usuario,updateData).then(res=>{console.log(res)})
 
 
-let obj = new tarjeta();
-let id_tarjeta = ("66cfed428d26b5da40f46c24")
+// let obj = new tarjeta();
+// let id_tarjeta = ("66cfed428d26b5da40f46c24")
+// const datosActualizados = {
+//     fecha_expedicion: "15/10/2024",
+//     estado: "inactiva"
+// };
+
+// obj.updateTarjeta(id_tarjeta, datosActualizados).then(res=>{console.log(res)})
+
+
+let obj = new sala();
+// const salaData = {
+//     tipo_sala: "4D",
+//     nombre: "marte"
+// };
+
+// obj.agregarSala(salaData).then(res=>{console.log(res)})
+
+let id_sala = ("66d68b169c0c70a8f651de7a");
 const datosActualizados = {
-    fecha_expedicion: "15/10/2024",
-    estado: "inactiva"
+    tipo_sala: "XD",
+    nombre: "crack"
 };
 
-obj.updateTarjeta(id_tarjeta, datosActualizados).then(res=>{console.log(res)})
+obj.updateSala( id_sala ,datosActualizados).then(res=>{console.log(res)})
