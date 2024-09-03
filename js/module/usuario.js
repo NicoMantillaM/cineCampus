@@ -192,4 +192,31 @@ module.exports = class usuario extends connect {
             console.error(error);
         }
     }
+
+    async consultarUsuarios(rol = null) {
+        await this.open();
+    
+        try {
+            this.collectionUsuario = this.db.collection('usuario');
+    
+            let filtro = {};
+            if (rol) {
+                if (['vip', 'estándar', 'administrador'].includes(rol.toLowerCase())) {
+                    filtro.rol = rol.toLowerCase();
+                } else {
+                    throw new Error(`Rol '${rol}' no es válido. Debe ser 'vip', 'estándar' o 'administrador'.`);
+                }
+            }
+    
+            const res = await this.collectionUsuario.find(filtro).toArray();
+            await this.connection.close();
+            return res;
+    
+        } catch (error) {
+            if (this.connection) {
+                await this.connection.close();
+            }
+            console.error(error);
+        }
+    }
 }

@@ -106,5 +106,9 @@ const sala = require('./js/module/sala');
 
 
 const obj = new usuario();
-let id_usuario = ("66cfe4288d26b5da40f46c1e");
-obj.consultarUsuario(id_usuario).then(res=>{console.log(res)})
+// let id_usuario = ("66cfe4288d26b5da40f46c1e");
+// obj.consultarUsuario(id_usuario).then(res=>{console.log(res)})
+
+// obj.consultarUsuarios().then(res=>{console.log(res)})
+
+// obj.consultarUsuarios('vip').then(res=>{console.log(res)})
