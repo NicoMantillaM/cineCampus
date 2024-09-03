@@ -122,7 +122,18 @@ module.exports = class boleta extends connect {
 
             this.connection.close();
 
-            return res;
+            return {
+                mensaje: "Boleta comprada con éxito",
+                detalles: {
+                    id_boleta: res.insertedId,
+                    fecha_de_compra: fecha_adquisicion,
+                    usuario: id_usuario,
+                    asientos: asientoIds,
+                    horario_de_la_funcion: id_horario_funcion,
+                    metodo_de_pago: metodo_pago,
+                    precio_total: precio_total
+                }
+            };
 
         } catch (error) {
             if (this.connection) {

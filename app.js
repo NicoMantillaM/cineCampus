@@ -17,17 +17,18 @@ const sala = require('./js/module/sala');
 // obj.getPelicula(id_pelicula).then(res=>{console.log(res)})
 
 
-// let obj = new boleta();
+let obj = new boleta();
 // let id_boleta = ('66ce54128588aa1bd07de77e') 
 
 
-// let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
-// let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
-// let id_usuario = ('66cfe4288d26b5da40f46c1b') 
-// let id_reserva = null
-// let metodo_pago = ("tarjeta de credito")
+let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
+let asientos = ['66d1bbcbcbb9384d08cf2b8a']; 
+let id_usuario = ('66cfe4288d26b5da40f46c1b') 
+let id_reserva = null
+let metodo_pago = ("tarjeta de credito")
 
-// obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago)
+obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago).then(res=>{console.log(res)})
+
 
 
 
@@ -87,7 +88,7 @@ const sala = require('./js/module/sala');
 // obj.updateTarjeta(id_tarjeta, datosActualizados).then(res=>{console.log(res)})
 
 
-let obj = new sala();
+// let obj = new sala();
 // const salaData = {
 //     tipo_sala: "4D",
 //     nombre: "marte"
@@ -95,10 +96,10 @@ let obj = new sala();
 
 // obj.agregarSala(salaData).then(res=>{console.log(res)})
 
-let id_sala = ("66d68b169c0c70a8f651de7a");
-const datosActualizados = {
-    tipo_sala: "XD",
-    nombre: "crack"
-};
+// let id_sala = ("66d68b169c0c70a8f651de7a");
+// const datosActualizados = {
+//     tipo_sala: "XD",
+//     nombre: "crack"
+// };
 
-obj.updateSala( id_sala ,datosActualizados).then(res=>{console.log(res)})
+// obj.updateSala( id_sala ,datosActualizados).then(res=>{console.log(res)})
