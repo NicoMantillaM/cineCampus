@@ -2,7 +2,7 @@ const connect = require('../../db/connect/connect');
 const { ObjectId } = require('mongodb');
 
 module.exports = class usuario extends connect {
-    collectionUsuario;  // Nombre corregido
+    collectionUsuario;  
 
     constructor() {
         super();
@@ -14,7 +14,7 @@ module.exports = class usuario extends connect {
 
         try {
             this.collectionUsuario = this.db.collection('usuario');
-            this.collectionTarjeta = this.db.collection('tarjeta'); // Conectar a la colección 'tarjeta'
+            this.collectionTarjeta = this.db.collection('tarjeta'); 
 
             const usuarioEmailExiste = await this.collectionUsuario.findOne({ email: email });
             if (usuarioEmailExiste) {

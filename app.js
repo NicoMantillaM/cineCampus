@@ -4,6 +4,7 @@ const boleta = require('./js/module/boleta');
 const asiento = require('./js/module/asiento');
 const reserva = require('./js/module/reserva');
 const usuario = require('./js/module/usuario');
+const tarjeta = require('./js/module/tarjeta');
 
 
 // let obj = new funcion();
@@ -50,8 +51,8 @@ const usuario = require('./js/module/usuario');
 // obj.cancelarReserva( id_reserva, id_usuario).then(res=>{console.log(res)})  
 
 
-let obj = new usuario();
-let id_usuario = ("66d6160f545ff2532832f401")
+// let obj = new usuario();
+// let id_usuario = ("66d6160f545ff2532832f401")
 // let nombre = ("Juan")
 // let apellido = ("Perez")
 // let email = ("juanpeo@example.com")
@@ -62,14 +63,24 @@ let id_usuario = ("66d6160f545ff2532832f401")
 // obj.createUser(nombre, apellido, email, nickname, telefono, rol).then(res=>{console.log(res)})
 
 
-let updateData =
-{
-    nombre: "guillermo",
-    apellido: "Perez",
-    email: "juanpeo@example.com",
-    nickname: "juatito",
-    telefono: "3123456790",
-    rol: "vip" 
+// let updateData =
+// {
+//     nombre: "guillermo",
+//     apellido: "Perez",
+//     email: "juanpeo@example.com",
+//     nickname: "juatito",
+//     telefono: "3123456790",
+//     rol: "vip" 
+// };
+
+// obj.updateUser(id_usuario,updateData).then(res=>{console.log(res)})
+
+
+let obj = new tarjeta();
+let id_tarjeta = ("66cfed428d26b5da40f46c24")
+const datosActualizados = {
+    fecha_expedicion: "15/10/2024",
+    estado: "inactiva"
 };
 
-obj.updateUser(id_usuario,updateData).then(res=>{console.log(res)})
+obj.updateTarjeta(id_tarjeta, datosActualizados).then(res=>{console.log(res)})
