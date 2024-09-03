@@ -149,4 +149,47 @@ module.exports = class usuario extends connect {
             console.log(error);
         } 
     }
+
+    async consultarUsuario(id_usuario) {
+        await this.open();
+
+        try {
+            this.collectionUsuario = this.db.collection('usuario');
+            this.collectionTarjeta = this.db.collection('tarjeta');
+
+            const usuario = await this.collectionUsuario.findOne({ _id: new ObjectId(id_usuario) });
+            if (!usuario) {
+                throw new Error(`El usuario con ID ${id_usuario} no existe.`);
+            }
+
+            const tarjetas = await this.collectionTarjeta.find({
+                id_usuario: new ObjectId(id_usuario)
+            }).toArray();
+    
+            const res = {
+                id: usuario._id,
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                email: usuario.email,
+                nickname: usuario.nickname,
+                telefono: usuario.telefono,
+                rol: usuario.rol,
+                tarjetas: tarjetas.map(tarjeta => ({
+                    id_tarjeta: tarjeta._id,
+                    estado: tarjeta.estado,
+                    fecha_expedicion: tarjeta.fecha_expedicion,
+                }))
+            };    
+
+            await this.connection.close();
+
+            return res;
+
+        } catch (error) {
+            if (this.connection) {
+                await this.connection.close();
+            }
+            console.error(error);
+        }
+    }
 }
