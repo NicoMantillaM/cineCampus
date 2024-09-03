@@ -16,13 +16,21 @@ const sala = require('./js/module/sala');
 // let id_pelicula = ("66cfec618d26b5da40f46c21")
 // obj.getPelicula(id_pelicula).then(res=>{console.log(res)})
 
+// let nuevaPelicula = {
+//     titulo: "mi villano favorito 4",
+//     genero: "comedia",
+//     duracion: 96,
+//     sinopsis: "Gru, Lucy, Margo, Edith y Agnes dan la bienvenida a un nuevo miembro de la familia, Gru Jr., quien está decidido a atormentar a su padre. Gru se enfrenta a nuevos némesis, Maxime Le Mal y su novia Valentina , por lo cual la familia se ve obligada a huir.",
+//     estado: "en cartelera"
+// }
+// obj.addPelicula(nuevaPelicula).then(res=>{console.log(res)})
 
 // let obj = new boleta();
 // let id_boleta = ('66ce54128588aa1bd07de77e') 
 
 
 // let id_horario_funcion = ('66cff2dc8d26b5da40f46c3d') 
-// let asientos = ['66d1bbcbcbb9384d08cf2b8a']; 
+// let asientos = ['66d1bbcbcbb9384d08cf2b8e']; 
 // let id_usuario = ('66cfe4288d26b5da40f46c1b') 
 // let id_reserva = null
 // let metodo_pago = ("tarjeta de credito")
@@ -105,7 +113,7 @@ const sala = require('./js/module/sala');
 // obj.updateSala( id_sala ,datosActualizados).then(res=>{console.log(res)})
 
 
-const obj = new usuario();
+// const obj = new usuario();
 // let id_usuario = ("66cfe4288d26b5da40f46c1e");
 // obj.consultarUsuario(id_usuario).then(res=>{console.log(res)})
 

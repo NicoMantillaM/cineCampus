@@ -50,9 +50,6 @@ module.exports = class asiento extends connect{
             return res; 
 
         } catch (error) {
-            if (this.connection) {
-                await this.connection.close(); 
-            }
             console.log(error); 
         }
     }
