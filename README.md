@@ -284,3 +284,52 @@ La clase `funcion` gestiona las funciones o proyecciones de películas en un cin
          console.log(res);
      })
      ```
+
+     ### Clase `pelicula`
+
+Esta clase se encarga de gestionar las operaciones relacionadas con las películas en la base de datos, incluyendo la adición de nuevas películas y la obtención de detalles de una película específica.
+
+#### **Ejemplo de uso**
+
+```javascript
+ // Crear una instancia de la clase pelicula
+let obj = new pelicula();
+
+// Obtener una película por su ID
+let id_pelicula = "66cfec618d26b5da40f46c21";
+obj.getPelicula(id_pelicula).then(res => { console.log(res) });
+
+// Agregar una nueva película a la base de datos
+let nuevaPelicula = {
+    titulo: "mi villano favorito 4",
+    genero: "comedia",
+    duracion: 96,
+    sinopsis: "Gru, Lucy, Margo, Edith y Agnes dan la bienvenida a un nuevo miembro de la familia, Gru Jr., quien está decidido a atormentar a su padre. Gru se enfrenta a nuevos némesis, Maxime Le Mal y su novia Valentina, por lo cual la familia se ve obligada a huir.",
+    estado: "en cartelera"
+};
+obj.addPelicula(nuevaPelicula).then(res => { console.log(res) });
+```
+
+#### **Métodos**
+
+- **`addPelicula(nuevaPelicula)`**
+  Este método agrega una nueva película a la base de datos. Verifica si ya existe una película con el mismo título antes de realizar la inserción.
+
+  **Parámetros:**
+
+  - `nuevaPelicula` (Object): Un objeto que contiene los datos de la película a agregar, incluyendo `titulo`, `genero`, `duracion`, `sinopsis`, y `estado`.
+
+  **Retorna:**
+
+  - Un objeto con un mensaje de éxito si la película fue agregada correctamente.
+
+- **`getPelicula(id_pelicula)`**
+  Este método obtiene los detalles de una película específica a partir de su ID.
+
+  **Parámetros:**
+
+  - `id_pelicula` (String): El ID de la película que se desea obtener.
+
+  **Retorna:**
+
+  - Un objeto que representa los datos de la película encontrada, o un error si no existe.
