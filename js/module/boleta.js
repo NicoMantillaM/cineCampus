@@ -1,16 +1,34 @@
-const connect = require('../../db/connect/connect')
+// Importar las dependencias necesarias
+const connect = require('../../db/connect/connect');
 const { ObjectId } = require('mongodb');
 
+// Definir la clase `boleta` que extiende de `connect`
 module.exports = class boleta extends connect {
-    collectionBoleta
+    collectionBoleta;
+
+    // Constructor de la clase `boleta`
     constructor() {
-        super()
+        super();
     }
 
+    /**
+     * @function comprarBoleta
+     * @description Este método permite la compra de una boleta para una función de cine. 
+     * Valida que el horario de la función exista, que el usuario y los asientos sean válidos, 
+     * y procesa la compra aplicando descuentos si corresponde.
+     * @param {string} id_horario_funcion - El ID del horario de la función.
+     * @param {Array} asientos - Un array con los IDs de los asientos seleccionados.
+     * @param {string} id_usuario - El ID del usuario que está comprando la boleta.
+     * @param {string} [id_reserva] - El ID de la reserva (opcional).
+     * @param {string} metodo_pago - El método de pago utilizado para la compra.
+     * @returns {Object} - Un objeto que incluye un mensaje de confirmación y los detalles de la compra.
+     * @throws {Error} - Si se produce un error durante la compra, se lanza un error con un mensaje descriptivo.
+     */
     async comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_pago) {
         await this.open();
 
         try {
+            // Inicializar las colecciones necesarias
             this.collectionBoleta = await this.db.collection('boleta');
             const collectionFuncion = this.db.collection('horario_funcion');
             const collectionReserva = this.db.collection('reserva');
@@ -32,14 +50,13 @@ module.exports = class boleta extends connect {
                 _id: { $in: asientoIds }
             }).toArray();
 
-
             // Validar que el usuario exista
             const usuario = await collectionUsuario.findOne({ _id: new ObjectId(id_usuario) });
             if (!usuario) {
                 throw new Error(`El usuario con ID ${id_usuario} no existe en la colección de usuarios.`);
             }
 
-            // RESERVA
+            // Manejar la lógica de reserva si existe
             if (id_reserva) {
                 const reserva = await collectionReserva.findOne({ _id: new ObjectId(id_reserva) });
 
@@ -52,12 +69,12 @@ module.exports = class boleta extends connect {
                     throw new Error(`El usuario con ID ${id_usuario} no hizo la reserva con ID ${id_reserva}.`);
                 }
 
-                // Verificar que el estado de la reserva sea "en proceso"
+                //  Verificar que el estado de la reserva sea "en proceso"
                 if (reserva.estado !== 'en proceso') {
                     throw new Error(`La reserva con ID ${id_reserva} no está en estado "en proceso".`);
                 }
 
-                // Verificar que los asientos en la reserva coinciden con los asientos seleccionados
+                //  Verificar que los asientos en la reserva coinciden con los asientos seleccionados
                 const asientosReserva = reserva.asientos.map(asiento => asiento.toString());
                 const asientosSeleccionadosStrings = asientos.map(asiento => asiento.toString());
 
@@ -67,14 +84,14 @@ module.exports = class boleta extends connect {
                     throw new Error(`Los asientos seleccionados no coinciden con los asientos reservados.`);
                 }
 
-                // Estado de reserva a 'completada'
+                // Cambiar el estado de la reserva a 'completada'
                 await collectionReserva.updateOne(
                     { _id: new ObjectId(id_reserva) },
                     { $set: { estado: 'completada' } }
                 );
 
             } else {
-                // Validar disponibilidad de los asientos cuando no hay reserva
+                // Validar la disponibilidad de los asientos cuando no hay reserva
                 const asientosDisponibles = asientosSeleccionados.filter(asiento =>
                     asiento.id_sala.toString() === id_sala_funcion.toString() &&
                     asiento.disponibilidad === 'disponible'
@@ -85,11 +102,10 @@ module.exports = class boleta extends connect {
                 }
             }
 
-            // Calcular el precio total 
+            // Calcular el precio total de la compra
             let precio_total = asientosSeleccionados.reduce((total, asiento) => total + asiento.precio, 0);
 
-
-            // Verificar si el usuario tiene una tarjeta VIP activa
+            // Verificar si el usuario tiene una tarjeta VIP activa y aplicar descuento
             const tarjetaVIP = await collectionTarjeta.findOne({
                 id_usuario: new ObjectId(id_usuario),
                 estado: 'activa'
@@ -100,7 +116,7 @@ module.exports = class boleta extends connect {
                 precio_total = precio_total * (1 - descuento);
             }
 
-            // Disponibilidad de asientos a "ocupado"
+            // Actualizar la disponibilidad de los asientos a "ocupado"
             await collectionAsiento.updateMany(
                 { _id: { $in: asientoIds } },
                 { $set: { disponibilidad: 'ocupado' } }
@@ -108,7 +124,7 @@ module.exports = class boleta extends connect {
 
             const fecha_adquisicion = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-            // Insertar la boleta
+            // Insertar la boleta en la colección correspondiente
             let res = await this.collectionBoleta.insertOne({
                 fecha_de_compra: fecha_adquisicion,
                 usuario: new ObjectId(id_usuario),
@@ -120,8 +136,10 @@ module.exports = class boleta extends connect {
                 precio_total: precio_total
             });
 
+            // Cerrar la conexión a la base de datos
             this.connection.close();
 
+            // Retornar un mensaje de confirmación y detalles de la compra
             return {
                 mensaje: "Boleta comprada con éxito",
                 detalles: {
@@ -136,12 +154,11 @@ module.exports = class boleta extends connect {
             };
 
         } catch (error) {
+            // Manejar errores y cerrar la conexión en caso de que ocurra un error
             if (this.connection) {
                 await this.connection.close();
             }
             console.log(error);
-
         }
     }
-
 }
