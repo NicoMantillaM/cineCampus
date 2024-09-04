@@ -224,3 +224,63 @@ obj.comprarBoleta(id_horario_funcion, asientos, id_usuario, id_reserva, metodo_p
 ### Manejo de errores
 
 En caso de que ocurra un error durante la compra, el método `comprarBoleta` lanzará un error con un mensaje descriptivo. Asegúrate de manejar estos errores adecuadamente en tu aplicación.
+
+### Clase `funcion`
+
+La clase `funcion` gestiona las funciones o proyecciones de películas en un cine. Esta clase extiende la clase `connect`, lo que permite la conexión y manipulación de datos en la base de datos MongoDB.
+
+#### Métodos
+
+1. **`getFuncionCartelera`**
+
+   - **Descripción**: Este método obtiene todas las funciones que están actualmente en cartelera. Se realiza un `lookup` para obtener la información detallada de cada película y se filtran solo aquellas cuyo estado es "cartelera".
+
+   - **Retorno**: Retorna un array de objetos, donde cada objeto contiene detalles de la función y la película correspondiente, incluyendo `id_sala`, `fecha_proyeccion`, `hora_inicio`, `hora_fin`, `titulo`, `genero`, `duracion`, `sinopsis`, y `estado`.
+
+   - Uso
+
+     :
+
+     ```javascript
+      let obj = new funcion();
+     obj.getFuncionCartelera().then(res => {
+         console.log(res);
+     });
+     ```
+
+2. **`addFuncion`**
+
+   - Descripción
+
+     : Este método permite agregar una nueva función (proyección de una película) a la base de datos. Antes de insertar la nueva función, se realizan varias validaciones:
+
+     - La película debe existir y estar en cartelera.
+     - La sala debe existir.
+     - No debe haber conflictos de horario con otras funciones en la misma sala.
+
+   - Parámetros
+
+     :
+
+     - `nuevaFuncion` (Object): Un objeto que contiene los detalles de la nueva función a agregar, incluyendo `id_sala`, `fecha_proyeccion`, `hora_inicio`, `hora_fin`, y `id_pelicula`.
+
+   - **Retorno**: Retorna un objeto con un mensaje indicando si la función fue creada con éxito.
+
+   - Uso
+
+     :
+
+     ```javascript
+    let obj = new funcion();
+     let nuevaFuncion = {
+         id_sala: "66cfeee58d26b5da40f46c26",
+         fecha_proyeccion: "18/09/2024",
+         hora_inicio: "13:20",
+         hora_fin: "14:50",
+         id_pelicula: "66cfec618d26b5da40f46c1f"
+     };
+     
+     obj.addFuncion(nuevaFuncion).then(res => {
+         console.log(res);
+     })
+     ```
