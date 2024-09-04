@@ -381,3 +381,55 @@ obj.createReserva(id_usuario, asientos, id_horario_funcion).then(res => {
   });
   ```
 
+### Clase `sala`
+
+La clase `sala` es responsable de gestionar la colección `sala` en la base de datos. Esta clase permite agregar nuevas salas y actualizar la información de salas existentes.
+
+## Métodos
+
+### 1. `agregarSala(salaData)`
+
+Este método permite agregar una nueva sala a la colección `sala`.
+
+#### Parámetros:
+- **`salaData`** *(Objeto)*: Contiene los datos de la sala que se desea agregar. Este objeto debe incluir la información necesaria para la sala, como nombre, capacidad, tipo, etc.
+
+#### Ejemplo de uso:
+```javascript
+const sala = require('./ruta/a/la/clase/sala');
+let obj = new sala();
+
+let nuevaSala = {
+    nombre: "Sala 1",
+    capacidad: 200,
+    tipo: "IMAX",
+    ubicacion: "Piso 1"
+};
+
+obj.agregarSala(nuevaSala).then(res => { console.log(res) });
+
+- ### 2. `updateSala(id_sala, datosActualizados)`
+
+  Este método permite actualizar los datos de una sala existente en la colección `sala`.
+
+  #### Parámetros:
+
+  - **`id_sala`** *(String)*: ID de la sala que se desea actualizar.
+  - **`datosActualizados`** *(Objeto)*: Contiene los campos que se desean actualizar en la sala. Solo se actualizarán los campos proporcionados en este objeto.
+
+  #### Ejemplo de uso:
+
+  ```javascript
+  const sala = require('./ruta/a/la/clase/sala');
+  let obj = new sala();
+  
+  let id_sala = "66cfec618d26b5da40f46c21";
+  
+  let datosActualizados = {
+      capacidad: 220,
+      tipo: "4DX"
+  };
+  
+  obj.updateSala(id_sala, datosActualizados).then(res => { console.log(res) });
+  ```
+
