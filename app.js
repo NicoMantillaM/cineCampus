@@ -55,7 +55,7 @@ let obj = new asiento();
 // obj.consultarDisponibilidadAsientos(id_sala, id_horario_funcion).then(res=>{console.log(res)})
 let nuevoAsiento = {
     id_sala: "66cfeee58d26b5da40f46c2b",
-    lugar: "p8",
+    lugar: "A8",
     tipo_lugar: "general",
     disponibilidad: "disponible",
     fila: "A",
