@@ -497,3 +497,99 @@ obj.agregarSala(nuevaSala).then(res => { console.log(res) });
      });
      ```
 
+   ### Clase `usuario`
+
+La clase `usuario` proporciona funcionalidades para gestionar usuarios en una base de datos MongoDB, incluyendo la creación, actualización, y consulta de usuarios. A continuación se detallan los métodos disponibles y ejemplos de uso.
+
+## Métodos Disponibles
+
+### `createUser(nombre, apellido, email, nickname, telefono, rol)`
+
+Crea un nuevo usuario con el rol especificado. Asigna roles en MongoDB y crea una tarjeta VIP si el rol es 'vip'.
+
+**Parámetros:**
+- `nombre` (string): Nombre del usuario.
+- `apellido` (string): Apellido del usuario.
+- `email` (string): Correo electrónico del usuario.
+- `nickname` (string): Apodo del usuario.
+- `telefono` (string): Número de teléfono del usuario.
+- `rol` (string): Rol del usuario. Puede ser 'Administrador', 'vip', o 'estándar'.
+
+**Ejemplo de Uso:**
+```javascript
+let obj = new usuario();
+let nombre = "Juan";
+let apellido = "Perez";
+let email = "juanpeo@example.com";
+let nickname = "juanpe";
+let telefono = "3123456790";
+let rol = "vip";
+
+obj.createUser(nombre, apellido, email, nickname, telefono, rol).then(res => {
+    console.log(res);
+});
+
+### `updateUser(id_usuario, updateData)`
+
+Actualiza la información de un usuario existente. Si se actualiza el rol a 'vip', se crea una tarjeta VIP si no existe. También actualiza el rol del usuario en MongoDB.
+
+**Parámetros:**
+
+- `id_usuario` (string): ID del usuario a actualizar.
+- `updateData` (Object): Datos a actualizar, incluyendo nombre, apellido, email, nickname, teléfono y rol.
+
+**Ejemplo de Uso:**
+
+```javascript
+let obj = new usuario();
+let id_usuario = "66d6160f545ff2532832f401";
+let updateData = {
+    nombre: "Guillermo",
+    apellido: "Perez",
+    email: "juanpeo@example.com",
+    nickname: "juatito",
+    telefono: "3123456790",
+    rol: "vip"
+};
+
+obj.updateUser(id_usuario, updateData).then(res => {
+    console.log(res);
+});
+```
+
+### `consultarUsuario(id_usuario)`
+
+Consulta los datos de un usuario específico por su ID, incluyendo las tarjetas asociadas al usuario.
+
+**Parámetros:**
+
+- `id_usuario` (string): ID del usuario a consultar.
+
+**Ejemplo de Uso:**
+
+```javascript
+let obj = new usuario();
+let id_usuario = "66d6160f545ff2532832f401";
+
+obj.consultarUsuario(id_usuario).then(res => {
+    console.log(res);
+});
+```
+
+### `consultarUsuarios(rol = null)`
+
+Consulta todos los usuarios, con opción de filtrar por rol. Los roles válidos son 'vip', 'estándar', y 'administrador'.
+
+**Parámetros:**
+
+- `rol` (string|null): Rol del usuario para filtrar. Si es `null`, no filtra por rol.
+
+**Ejemplo de Uso:**
+
+```javascript
+let obj = new usuario();
+
+obj.consultarUsuarios('vip').then(res => {
+    console.log(res);
+});
+```
