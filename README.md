@@ -333,3 +333,51 @@ obj.addPelicula(nuevaPelicula).then(res => { console.log(res) });
   **Retorna:**
 
   - Un objeto que representa los datos de la película encontrada, o un error si no existe.
+
+  ### Clase `reserva`
+
+La clase `reserva` se utiliza para gestionar las reservas de asientos para una función de cine. Esta clase permite crear y cancelar reservas, asegurando la integridad de los datos y la disponibilidad de los asientos.
+
+## Métodos
+
+### `createReserva(id_usuario, asientos, id_horario_funcion)`
+
+Este método permite crear una nueva reserva para un usuario específico, verificando la disponibilidad de los asientos y su pertenencia a la sala de la función.
+
+#### Parámetros:
+- `id_usuario` (String): ID del usuario que realiza la reserva.
+- `asientos` (Array<String>): Un array con los IDs de los asientos que se desean reservar.
+- `id_horario_funcion` (String): ID del horario de la función a la cual pertenece la reserva.
+
+#### Ejemplo de uso:
+```javascript
+let obj = new reserva();
+let id_usuario = "66cfe4288d26b5da40f46c1e";
+let asientos = ['66d1bbcbcbb9384d08cf2b8a', '66d1bbcbcbb9384d08cf2b8d']; 
+let id_horario_funcion = "66cff2dc8d26b5da40f46c3d";
+
+obj.createReserva(id_usuario, asientos, id_horario_funcion).then(res => {
+    console.log(res);
+});
+
+- ### `cancelarReserva(id_reserva, id_usuario)`
+
+  Este método permite cancelar una reserva existente, devolviendo los asientos a su estado disponible.
+
+  #### Parámetros:
+
+  - `id_reserva` (String): ID de la reserva que se desea cancelar.
+  - `id_usuario` (String): ID del usuario que realizó la reserva.
+
+  #### Ejemplo de uso:
+
+  javascript
+  let obj = new reserva();
+  let id_reserva = "66d560f7b70f5e9cdd4a73a8";
+  let id_usuario = "66cfe4288d26b5da40f46c1e";
+  
+  obj.cancelarReserva(id_reserva, id_usuario).then(res => {
+      console.log(res);
+  });
+  ```
+
