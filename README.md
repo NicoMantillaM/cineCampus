@@ -433,3 +433,67 @@ obj.agregarSala(nuevaSala).then(res => { console.log(res) });
   obj.updateSala(id_sala, datosActualizados).then(res => { console.log(res) });
   ```
 
+- ### Clase `tarjeta`
+
+  La clase `tarjeta` gestiona operaciones relacionadas con las tarjetas en la base de datos, permitiendo actualizar la información de una tarjeta específica.
+
+  #### Métodos
+
+  ##### `updateTarjeta(id_tarjeta, datosActualizados)`
+
+  Actualiza los datos de una tarjeta existente en la colección `tarjeta`.
+
+  - **Parámetros:**
+
+    - `id_tarjeta` (string): El ID de la tarjeta que se desea actualizar.
+    - `datosActualizados` (Object): Un objeto con los campos que se deben actualizar en la tarjeta.
+
+  - **Retorno:**
+
+    - Éxito
+
+      : Un objeto con el siguiente formato:
+
+      ```javascript
+      {
+        "mensaje": "Tarjeta actualizada con éxito",
+        "detalles": { /* Datos actualizados */ }
+      }
+      ```
+
+    - Fallido
+
+      : En caso de no realizar ninguna actualización, retorna:
+
+      ```javascript
+      {
+        "mensaje": "No se realizó ninguna actualización",
+        "detalles": { /* Datos actualizados */ }
+      }
+      ```
+
+  - **Excepciones:**
+
+    - Lanza un error si la tarjeta con el `id_tarjeta` proporcionado no existe en la base de datos.
+
+  #### Ejemplos de Uso
+
+  1. **Actualizar una tarjeta existente**
+
+     ```javascript
+      // Crear una instancia de la clase tarjeta
+     let obj = new tarjeta();
+     
+     // Definir el ID de la tarjeta y los datos a actualizar
+     let id_tarjeta = "66cfed428d26b5da40f46c24";
+     const datosActualizados = {
+         fecha_expedicion: "15/10/2024",
+         estado: "inactiva"
+     };
+     
+     // Llamar al método updateTarjeta
+     obj.updateTarjeta(id_tarjeta, datosActualizados).then(res => {
+         console.log(res);
+     });
+     ```
+
