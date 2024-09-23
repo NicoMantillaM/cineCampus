@@ -35,22 +35,22 @@ module.exports = class sala extends connect {
     // * Método para actualizar los datos de una sala existente
     //  Este método actualiza un documento en la colección 'sala'
     //  Implementar una validación más robusta para los datos actualizados
-    async updateSala(id_sala, datosActualizados) {
+    async updateSala(id_salA, datosActualizados) {
         await this.open(); //Abre la conexión a la base de datos
 
         try {
             this.collectionSala = this.db.collection('sala'); //  Asigna la colección 'sala' a la variable
 
             // * Verifica si la sala con el ID proporcionado existe
-            const salaExistente = await this.collectionSala.findOne({ _id: new ObjectId(id_sala) });
+            const salaExistente = await this.collectionSala.findOne({ _id: new ObjectId(id_salA.id_sala) });
             if (!salaExistente) {
                 //  Lanza un error si la sala no existe
-                throw new Error(`La sala con ID ${id_sala} no existe.`);
+                throw new Error(`La sala con ID ${id_salA.id_sala} no existe.`);
             }
 
             // * Actualiza el documento en la colección 'sala'
             const res = await this.collectionSala.updateOne(
-                { _id: new ObjectId(id_sala) },
+                { _id: new ObjectId(id_salA.id_sala) },
                 { $set: datosActualizados } //  Aplica solo las actualizaciones necesarias
             );
 

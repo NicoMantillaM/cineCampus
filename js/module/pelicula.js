@@ -7,7 +7,6 @@ module.exports = class pelicula extends connect {
     constructor() {
         super();
     }
-
     /**
      * @method addPelicula
      * @description Agrega una nueva película a la base de datos. 
@@ -48,25 +47,27 @@ module.exports = class pelicula extends connect {
      * @param {string} id_pelicula - ID de la película que se desea obtener.
      * @returns {Object} - Objeto que representa los datos de la película encontrada.
      */
-    async getPelicula(id_pelicula) {
-        await this.open();  // Abre la conexión a la base de datos.
+    
+    async getPelicula(id_peliculA) {
+        await this.open(); 
         try {
             this.collectionPelicula = this.db.collection('pelicula');
-
+    
             // Busca la película por su ID.
-            const res = await this.collectionPelicula.findOne({ _id: new ObjectId(id_pelicula) });
-
+            const res = await this.collectionPelicula.findOne({ _id: new ObjectId(id_peliculA.id_pelicula) });
+    
             if (!res) {
-                throw new Error("La película que ingresó no existe");
+                return { status: 404, message: "La película que ingresó no existe" }; 
             }
-
-            this.connection.close();  // Cierra la conexión a la base de datos.
-            return res;
+    
+            await this.connection.close();  
+            return { status: 200, pelicula: res }; 
         } catch (error) {
             if (this.connection) {
-                await this.connection.close();  // Cierra la conexión en caso de error.
+                await this.connection.close();  
             }
             console.error(error);
-        }
-    }
+            return { status: 500, message: "Error interno del servidor" };  
+    }    
+}
 }

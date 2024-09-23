@@ -15,21 +15,21 @@ module.exports = class tarjeta extends connect {
      * @param {Object} datosActualizados - Un objeto con los datos que se desean actualizar en la tarjeta.
      * @returns {Object} Un objeto con un mensaje indicando el resultado de la actualización y los detalles actualizados.
      */
-    async updateTarjeta(id_tarjeta, datosActualizados) {
+    async updateTarjeta(id_tarjetA, datosActualizados) {
         await this.open();
 
         try {
             this.collectionTarjeta = this.db.collection('tarjeta');
             
             // Verificar si la tarjeta existe en la base de datos.
-            const tarjetaExistente = await this.collectionTarjeta.findOne({ _id: new ObjectId(id_tarjeta) });
+            const tarjetaExistente = await this.collectionTarjeta.findOne({ _id: new ObjectId(id_tarjetA.id_tarjeta) });
             if (!tarjetaExistente) {
-                throw new Error(`La tarjeta con ID ${id_tarjeta} no existe.`);
+                throw new Error(`La tarjeta con ID ${id_tarjetA.id_tarjeta} no existe.`);
             }
 
             // Actualizar la tarjeta con los datos proporcionados.
             const res = await this.collectionTarjeta.updateOne(
-                { _id: new ObjectId(id_tarjeta) },
+                { _id: new ObjectId(id_tarjetA.id_tarjeta) },
                 { $set: datosActualizados }
             );
 

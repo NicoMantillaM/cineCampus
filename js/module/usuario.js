@@ -22,81 +22,84 @@ module.exports = class usuario extends connect {
      * @returns {Object} Mensaje y detalles del usuario creado.
      * @throws {Error} Si el email, nickname o teléfono ya están en uso.
      */
-    async createUser(nombre, apellido, email, nickname, telefono, rol) {
-        await this.open();
+    
+    async createUser(newUser) {
+    await this.open();
 
-        try {
-            this.collectionUsuario = this.db.collection('usuario');
-            this.collectionTarjeta = this.db.collection('tarjeta'); 
+    try {
+        this.collectionUsuario = this.db.collection('usuario');
+        this.collectionTarjeta = this.db.collection('tarjeta'); 
 
-            // Verificar si el email ya está en uso
-            const usuarioEmailExiste = await this.collectionUsuario.findOne({ email: email });
-            if (usuarioEmailExiste) {
-                throw new Error(`El usuario con el email: ${email} ya existe`);
-            }
+        const { nombre, apellido, email, nickname, telefono, rol } = newUser;
 
-            // Verificar si el nickname ya está en uso
-            const usuarioNicknameExiste = await this.collectionUsuario.findOne({ nickname: nickname });
-            if (usuarioNicknameExiste) {
-                throw new Error(`El usuario con el nickname: ${nickname} ya existe`);
-            }
+        // Verificar si el email ya está en uso
+        const usuarioEmailExiste = await this.collectionUsuario.findOne({ email: email });
+        if (usuarioEmailExiste) {
+            throw new Error(`El usuario con el email: ${email} ya existe`);
+        }
 
-            // Verificar si el teléfono ya está en uso
-            const usuarioTelefonoExiste = await this.collectionUsuario.findOne({ telefono: telefono });
-            if (usuarioTelefonoExiste) {
-                throw new Error(`El usuario con el telefono: ${telefono} ya existe`);
-            }
+        // Verificar si el nickname ya está en uso
+        const usuarioNicknameExiste = await this.collectionUsuario.findOne({ nickname: nickname });
+        if (usuarioNicknameExiste) {
+            throw new Error(`El usuario con el nickname: ${nickname} ya existe`);
+        }
 
-            // Insertar el usuario en la colección 'usuario'
-            const res = await this.collectionUsuario.insertOne({
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                nickname: nickname,
-                telefono: telefono,
-                rol: rol
+        // Verificar si el teléfono ya está en uso
+        const usuarioTelefonoExiste = await this.collectionUsuario.findOne({ telefono: telefono });
+        if (usuarioTelefonoExiste) {
+            throw new Error(`El usuario con el telefono: ${telefono} ya existe`);
+        }
+
+        // Insertar el usuario en la colección 'usuario'
+        const res = await this.collectionUsuario.insertOne({
+            nombre: nombre,
+            apellido: apellido,
+            email: email,
+            nickname: nickname,
+            telefono: telefono,
+            rol: rol
+        });
+
+        const usuarioId = res.insertedId; // Obtener el ID del usuario recién insertado
+
+        // Asignar el rol adecuado en MongoDB
+        if (rol === 'Administrador') {
+            await this.db.command({
+                createUser: nickname,
+                pwd: telefono,
+                roles: [
+                    { role: "dbOwner", db: "cineCampus" }
+                ]
+            });
+        } else if (rol === 'vip') {
+            // Asignar el rol 'vip' y crear tarjeta VIP
+            await this.db.command({
+                createUser: nickname,
+                pwd: telefono,
+                roles: [{ role: 'vip', db: 'cineCampus' }]
             });
 
-            const usuarioId = res.insertedId; // Obtener el ID del usuario recién insertado
-
-            // Asignar el rol adecuado en MongoDB
-            if (rol === 'Administrador') {
-                await this.db.command({
-                    createUser: nickname,
-                    pwd: telefono,
-                    roles: [
-                        { role: "dbOwner", db: "cineCampus" }
-                    ]
-                });
-            } else if (rol === 'vip') {
-                // Asignar el rol 'vip' y crear tarjeta VIP
-                await this.db.command({
-                    createUser: nickname,
-                    pwd: telefono,
-                    roles: [{ role: 'vip', db: 'cineCampus' }]
-                });
-
-                await this.collectionTarjeta.insertOne({
-                    _id: new ObjectId(),
-                    fecha_expedicion: new Date().toISOString().slice(0, 10), // Fecha actual
-                    estado: "activa",
-                    id_usuario: usuarioId
-                });
-            } else {
-                // Asignar el rol 'estándar'
-                await this.db.command({
-                    createUser: nickname,
-                    pwd: telefono,
-                    roles: [{ role: 'estandar', db: 'cineCampus' }]
-                });
-            }
-
-            return { message: 'El usuario se registró correctamente y se asignó el rol', usuario: res };
-
-        } catch (error) {
-            console.log(error);
+            await this.collectionTarjeta.insertOne({
+                _id: new ObjectId(),
+                fecha_expedicion: new Date().toISOString().slice(0, 10), // Fecha actual
+                estado: "activa",
+                id_usuario: usuarioId
+            });
+        } else {
+            // Asignar el rol 'estándar'
+            await this.db.command({
+                createUser: nickname,
+                pwd: telefono,
+                roles: [{ role: 'estandar', db: 'cineCampus' }]
+            });
         }
+
+        return { message: 'El usuario se registró correctamente y se asignó el rol', usuario: res };
+
+    } catch (error) {
+        console.log(error);
     }
+}
 
     /**
      * Actualiza los datos de un usuario existente.
@@ -107,7 +110,7 @@ module.exports = class usuario extends connect {
      * @returns {Object} Mensaje y detalles del usuario actualizado.
      * @throws {Error} Si el usuario no existe o si hay problemas con la actualización del rol.
      */
-    async updateUser(id_usuario, updateData) {
+    async updateUser(id_usuariO, updateData) {
         await this.open();
 
         try {
@@ -115,9 +118,9 @@ module.exports = class usuario extends connect {
             this.collectionTarjeta = this.db.collection('tarjeta');
 
             // Verificar si el usuario existe
-            const usuarioExiste = await this.collectionUsuario.findOne({ _id: new ObjectId(id_usuario) });
+            const usuarioExiste = await this.collectionUsuario.findOne({ _id: new ObjectId(id_usuariO.id_usuario) });
             if (!usuarioExiste) {
-                throw new Error(`El usuario con el ID: ${id_usuario} no existe`);
+                throw new Error(`El usuario con el ID: ${id_usuariO.id_usuario} no existe`);
             }
 
             // Actualizar el rol del usuario si se proporciona
@@ -126,7 +129,7 @@ module.exports = class usuario extends connect {
 
                 if (nuevoRol === 'vip') {
                     // Verificar si el usuario ya tiene una tarjeta VIP
-                    const tarjetaExiste = await this.collectionTarjeta.findOne({ id_usuario: new ObjectId(id_usuario) });
+                    const tarjetaExiste = await this.collectionTarjeta.findOne({ id_usuario: new ObjectId(id_usuariO.id_usuario) });
 
                     if (!tarjetaExiste) {
                         // Crear una nueva tarjeta VIP
@@ -134,7 +137,7 @@ module.exports = class usuario extends connect {
                             _id: new ObjectId(),
                             fecha_expedicion: new Date().toISOString().slice(0, 10), // Fecha actual
                             estado: 'activa',
-                            id_usuario: new ObjectId(id_usuario)
+                            id_usuario: new ObjectId(id_usuariO.id_usuario)
                         });
                     }
 
@@ -162,7 +165,7 @@ module.exports = class usuario extends connect {
 
             // Actualizar los datos del usuario en la colección 'usuario'
             await this.collectionUsuario.updateOne(
-                { _id: new ObjectId(id_usuario) },
+                { _id: new ObjectId(id_usuariO.id_usuario) },
                 { $set: updateData }
             );
 
@@ -181,7 +184,7 @@ module.exports = class usuario extends connect {
      * @returns {Object} Datos del usuario y tarjetas asociadas.
      * @throws {Error} Si el usuario no existe.
      */
-    async consultarUsuario(id_usuario) {
+    async consultarUsuario(id_usuariO) {
         await this.open();
 
         try {
@@ -189,14 +192,14 @@ module.exports = class usuario extends connect {
             this.collectionTarjeta = this.db.collection('tarjeta');
 
             // Consultar el usuario por ID
-            const usuario = await this.collectionUsuario.findOne({ _id: new ObjectId(id_usuario) });
+            const usuario = await this.collectionUsuario.findOne({ _id: new ObjectId(id_usuariO.id_usuario) });
             if (!usuario) {
-                throw new Error(`El usuario con ID ${id_usuario} no existe.`);
+                throw new Error(`El usuario con ID ${id_usuariO.id_usuario} no existe.`);
             }
 
             // Consultar las tarjetas asociadas al usuario
             const tarjetas = await this.collectionTarjeta.find({
-                id_usuario: new ObjectId(id_usuario)
+                id_usuario: new ObjectId(id_usuariO.id_usuario)
             }).toArray();
     
             const res = {

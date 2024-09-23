@@ -23,7 +23,7 @@ module.exports = class asiento extends connect {
      * @returns {Promise<Object[]>} Un array con los asientos disponibles.
      * @throws {Error} Si el ID de la sala o el horario de la función no existen o no coinciden.
      */
-    async consultarDisponibilidadAsientos(id_sala, id_horario_funcion) {
+    async consultarDisponibilidadAsientos(id_salA, id_horario_Funcion) {
         await this.open(); // Abre la conexión a la base de datos
         try {
             // Obtiene las colecciones 'horario_funcion' y 'sala' de la base de datos
@@ -31,21 +31,21 @@ module.exports = class asiento extends connect {
             const collectionSala = this.db.collection('sala'); 
 
             // Verifica si el id_sala existe en la colección 'sala'
-            const salaExiste = await collectionSala.findOne({ _id: new ObjectId(id_sala) });
+            const salaExiste = await collectionSala.findOne({ _id: new ObjectId(id_salA.id_sala) });
             if (!salaExiste) {
                 throw new Error('El id_sala proporcionado no existe.'); // Lanza un error si la sala no existe
             }
 
             // Verifica si el id_horario_funcion existe en la colección 'horario_funcion'
-            const horarioExiste = await collectionHorarioFuncion.findOne({ _id: new ObjectId(id_horario_funcion) });
+            const horarioExiste = await collectionHorarioFuncion.findOne({ _id: new ObjectId(id_horario_Funcion.id_horario_funcion) });
             if (!horarioExiste) {
                 throw new Error('El id_horario_funcion proporcionado no existe.'); // Lanza un error si el horario de función no existe
             }
 
             // Verifica si el id_sala concuerda con el que está en 'horario_funcion'
             const funcion = await collectionHorarioFuncion.findOne({
-                _id: new ObjectId(id_horario_funcion),
-                id_sala: new ObjectId(id_sala)
+                _id: new ObjectId(id_horario_Funcion.id_horario_funcion),
+                id_sala: new ObjectId(id_salA.id_sala)
             });
 
             if (!funcion) {
@@ -57,8 +57,8 @@ module.exports = class asiento extends connect {
 
             // Busca los asientos disponibles para la sala y el horario especificados
             const res = await collectionAsiento.find({
-                id_sala: new ObjectId(id_sala),
-                id_horario_funcion: new ObjectId(id_horario_funcion),
+                id_sala: new ObjectId(id_salA.id_sala),
+                id_horario_funcion: new ObjectId(id_horario_Funcion.id_horario_funcion),
                 disponibilidad: 'disponible'
             }).toArray();
 
