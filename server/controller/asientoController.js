@@ -1,5 +1,5 @@
 // Importa la conexión a la base de datos desde el archivo 'connect.js'
-const connect = require('../../db/connect/connect');
+const connect = require('../../../db/connect/connect');
 
 // Importa la clase ObjectId desde el módulo 'mongodb' para manejar identificadores únicos
 const { ObjectId } = require('mongodb');

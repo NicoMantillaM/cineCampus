@@ -1,5 +1,5 @@
 // Importar la clase `connect` y `ObjectId` de `mongodb`
-const connect = require('../../db/connect/connect');
+const connect = require('../../../db/connect/connect');
 const { ObjectId } = require('mongodb')
 
 // Exportar la clase `funcion` que extiende la clase `connect`

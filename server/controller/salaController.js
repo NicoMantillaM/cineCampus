@@ -1,4 +1,4 @@
-const connect = require('../../db/connect/connect');
+const connect = require('../../../db/connect/connect');
 const { ObjectId } = require('mongodb');
 
 // * Clase para gestionar la colección 'sala' en la base de datos

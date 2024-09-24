@@ -1,5 +1,5 @@
 // Importar las dependencias necesarias
-const connect = require('../../db/connect/connect');
+const connect = require('../../../db/connect/connect');
 const { ObjectId } = require('mongodb');
 
 // Definir la clase `boleta` que extiende de `connect`

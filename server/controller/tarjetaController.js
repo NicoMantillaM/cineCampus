@@ -1,4 +1,4 @@
-const connect = require('../../db/connect/connect');
+const connect = require('../../../db/connect/connect');
 const { ObjectId } = require('mongodb');
 
 module.exports = class tarjeta extends connect {

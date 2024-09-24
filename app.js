@@ -1,11 +1,11 @@
-const funcion = require('./js/module/horario_funcion');
-const pelicula = require('./js/module/pelicula');
-const boleta = require('./js/module/boleta');
-const asiento = require('./js/module/asiento');
-const reserva = require('./js/module/reserva');
-const usuario = require('./js/module/usuario');
-const tarjeta = require('./js/module/tarjeta');
-const sala = require('./js/module/sala');
+const funcion = require('./server/js/controller/horario_funcionController');
+const pelicula = require('./server/js/controller/peliculaController');
+const boleta = require('./server/js/controller/boletaController');
+const asiento = require('./server/js/controller/asientoController');
+const reserva = require('./server/js/controller/reservaController');
+const usuario = require('./server/js/controller/usuarioController');
+const tarjeta = require('./server/js/controller/tarjetaController');
+const sala = require('./server/js/controller/salaController');
 
 
 // let obj = new funcion();
