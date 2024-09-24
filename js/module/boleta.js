@@ -24,6 +24,7 @@ module.exports = class boleta extends connect {
      * @returns {Object} - Un objeto que incluye un mensaje de confirmación y los detalles de la compra.
      * @throws {Error} - Si se produce un error durante la compra, se lanza un error con un mensaje descriptivo.
      */
+    
     async comprarBoleta(nuevaBoleta) {
         await this.open();
         try {
@@ -45,30 +46,30 @@ module.exports = class boleta extends connect {
             // Validar que el horario de la función existe
             const funcion = await collectionFuncion.findOne({ _id: nuevaBoleta.id_horario_funcion });
             if (!funcion) {
-                throw new Error("La función no existe");
+                return { status: 404, message: "La función no existe" }; // 404 Not Found
             }
     
             // Validar que el usuario existe
             const usuario = await collectionUsuario.findOne({ _id: nuevaBoleta.id_usuario });
             if (!usuario) {
-                throw new Error("El usuario no existe");
+                return { status: 404, message: "El usuario no existe" }; // 404 Not Found
             }
     
             // Validar si hay reserva y coinciden los asientos
             if (nuevaBoleta.id_reserva) {
                 const reserva = await collectionReserva.findOne({ _id: nuevaBoleta.id_reserva });
                 if (!reserva) {
-                    throw new Error("La reserva no existe");
+                    return { status: 404, message: "La reserva no existe" }; // 404 Not Found
                 }
                 if (reserva.id_usuario.toString() !== nuevaBoleta.id_usuario.toString()) {
-                    throw new Error("El usuario no coincide con la reserva");
+                    return { status: 403, message: "El usuario no coincide con la reserva" }; // 403 Forbidden
                 }
                 const asientosReservados = reserva.asientos.map(asiento => asiento.toString());
                 const asientosSeleccionados = nuevaBoleta.asientos.map(asiento => asiento.toString());
     
                 const coincideAsientos = asientosSeleccionados.every(asiento => asientosReservados.includes(asiento));
                 if (!coincideAsientos) {
-                    throw new Error("Los asientos seleccionados no coinciden con los reservados");
+                    return { status: 400, message: "Los asientos seleccionados no coinciden con los reservados" }; // 400 Bad Request
                 }
             } else {
                 // Validar la disponibilidad de los asientos si no hay reserva
@@ -78,7 +79,7 @@ module.exports = class boleta extends connect {
                 }).toArray();
     
                 if (asientosDisponibles.length !== nuevaBoleta.asientos.length) {
-                    throw new Error("Uno o más asientos no están disponibles");
+                    return { status: 400, message: "Uno o más asientos no están disponibles" }; // 400 Bad Request
                 }
             }
     
@@ -110,58 +111,67 @@ module.exports = class boleta extends connect {
             const res = await this.collectionBoleta.insertOne(nuevaBoleta);
     
             if (!res.insertedId) {
-                throw new Error("No se pudo registrar la compra de la boleta");
+                return { status: 500, message: "No se pudo registrar la compra de la boleta" }; // 500 Internal Server Error
             }
     
             await this.connection.close();
-            return { message: "Boleta comprada con éxito", id_boleta: res.insertedId };
+            return { status: 201, message: "Boleta comprada con éxito", id_boleta: res.insertedId }; // 201 Created
     
         } catch (error) {
             if (this.connection) {
                 await this.connection.close();
             }
             console.error(error);
-            throw new Error(error.message);
+            return { status: 500, message: "Error interno del servidor" }; // 500 Internal Server Error
         }
     }
+    
     async getFuncionCartelera() {
-
         await this.open();
     
-        this.collectionFuncion = this.db.collection('horario_funcion');
-        let res = await this.collectionFuncion.aggregate([
-          {
-            $lookup: {
-              from: "pelicula",
-              localField: "id_pelicula",
-              foreignField: "_id",
-              as: "info_pelicula"
+        try {
+            this.collectionFuncion = this.db.collection('horario_funcion');
+            const res = await this.collectionFuncion.aggregate([
+                {
+                    $lookup: {
+                        from: "pelicula",
+                        localField: "id_pelicula",
+                        foreignField: "_id",
+                        as: "info_pelicula"
+                    }
+                },
+                {
+                    $unwind: "$info_pelicula"
+                },
+                {
+                    $match: {
+                        "info_pelicula.estado": "cartelera"
+                    }
+                },
+                {
+                    $project: {
+                        id_sala: 1,
+                        fecha_proyeccion: 1,
+                        hora_fin: 1,
+                        hora_inicio: 1,
+                        titulo: "$info_pelicula.titulo",
+                        genero: "$info_pelicula.genero",
+                        duracion: "$info_pelicula.duracion",
+                        sinopsis: "$info_pelicula.sinopsis",
+                        estado: "$info_pelicula.estado"
+                    }
+                }
+            ]).toArray();
+    
+            await this.connection.close();
+            return { status: 200, funciones: res }; // 200 OK
+        } catch (error) {
+            if (this.connection) {
+                await this.connection.close();
             }
-          },
-          {
-            $unwind: "$info_pelicula"
-          },
-          {
-            $match: {
-              "info_pelicula.estado": "cartelera"
-            }
-          },
-          {
-            $project: {
-              id_sala: 1,
-              fecha_proyeccion: 1,
-              hora_fin: 1,
-              hora_inicio: 1,
-              titulo: "$info_pelicula.titulo",
-              genero: "$info_pelicula.genero",
-              duracion: "$info_pelicula.duracion",
-              sinopsis: "$info_pelicula.sinopsis",
-              estado: "$info_pelicula.estado"
-            }
-          }
-        ]).toArray();
-        this.connection.close();
-        return res;
-      }    
+            console.error(error);
+            return { status: 500, message: "Error interno del servidor" }; // 500 Internal Server Error
+        }
+    }    
 }    
     

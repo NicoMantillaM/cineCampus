@@ -12,85 +12,87 @@ module.exports = class reserva extends connect {
     // @param {Array<string>} asientos - Un array de IDs de los asientos que se desean reservar.
     // @param {string} id_horario_funcion - El ID del horario de la función a la cual pertenece la reserva.
     // @returns {Object} Un objeto con un mensaje de éxito y los detalles de la reserva realizada.
-    async createReserva(id_usuariO, asientOs, id_horario_funciOn) {
+
+    async createReserva(id_usuariO, asientOs, id_horario_funciOn, res) {
         await this.open();
-    
+
         try {
             this.collectionReserva = this.db.collection('reserva');
             const collectionHorarioFuncion = this.db.collection('horario_funcion');
             const collectionAsiento = this.db.collection('asiento');
             const collectionUsuario = this.db.collection('usuario');
-    
+
             // Verificar la existencia de id_horario_funcion
             const horarioFuncion = await collectionHorarioFuncion.findOne({ _id: new ObjectId(id_horario_funciOn.id_horario_funcion) });
             if (!horarioFuncion) {
-                throw new Error('El id_horario_funcion proporcionado no existe.');
+                return res.status(404).send({ mensaje: 'El id_horario_funcion proporcionado no existe.' });
             }
-    
+
             // Verificar la existencia del usuario
             const usuarioExiste = await collectionUsuario.findOne({ _id: new ObjectId(id_usuariO.id_usuario) });
             if (!usuarioExiste) {
-                throw new Error('El usuario proporcionado no existe.');
+                return res.status(404).send({ mensaje: 'El usuario proporcionado no existe.' });
             }
-    
+
             // Verificar la existencia de los asientos y su disponibilidad
             const asientosDetalles = await collectionAsiento.find({
                 _id: { $in: asientOs.asientos.map(id => new ObjectId(id)) },
                 disponibilidad: 'disponible'
             }).toArray();
-    
+
             // Si la cantidad de asientos disponibles no coincide con los solicitados, arroja un error.
             if (asientosDetalles.length !== asientOs.asientos.length) {
-                throw new Error('Uno o más asientos no existen o no están disponibles.');
+                return res.status(400).send({ mensaje: 'Uno o más asientos no existen o no están disponibles.' });
             }
-    
+
             // Verificar que todos los asientos pertenezcan a la misma sala que la proyección
             const idSalaHorario = horarioFuncion.id_sala.toString();
             const asientosInvalidos = asientosDetalles.some(asiento => asiento.id_sala.toString() !== idSalaHorario);
             if (asientosInvalidos) {
-                throw new Error('Uno o más asientos no pertenecen a la sala de la función especificada.');
+                return res.status(400).send({ mensaje: 'Uno o más asientos no pertenecen a la sala de la función especificada.' });
             }
-    
-            // * Crear la reserva
-            const res = await this.collectionReserva.insertOne({
+
+            // Crear la reserva
+            const resultado = await this.collectionReserva.insertOne({
                 id_usuario: new ObjectId(id_usuariO.id_usuario),
                 asientos: asientOs.asientos.map(id => new ObjectId(id)),
                 id_horario_funcion: new ObjectId(id_horario_funciOn.id_horario_funcion),
                 estado: 'en proceso',
-                // Asegurarse que la fecha se formatee correctamente
                 fecha: new Date().toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }) // Formato dd/mm/yyyy
             });
-    
-            // * Actualizar la disponibilidad de los asientos a "reservado"
+
+            // Actualizar la disponibilidad de los asientos a "reservado"
             await collectionAsiento.updateMany(
                 { _id: { $in: asientOs.asientos.map(id => new ObjectId(id)) } },
                 { $set: { disponibilidad: 'reservado' } }
             );
-    
-            this.connection.close();
-            return { message: 'Reserva realizada con éxito', reserva: res };
+
+            await this.connection.close();
+            return res.status(201).send({ mensaje: 'Reserva realizada con éxito', reserva: resultado });
+
         } catch (error) {
-            // Capturar y manejar cualquier error que ocurra durante la operación
+            // Manejo de errores y cierre de conexión
             if (this.connection) {
                 await this.connection.close();
             }
-            console.log(error);
-            throw error; // Asegura que se lance el error para manejarlo adecuadamente
+            console.error(error);
+            return res.status(500).send({ mensaje: 'Error en el servidor. Inténtalo de nuevo más tarde.' });
         }
-    }    
+    }
 
     // * Método para cancelar una reserva existente
     // @param {string} id_reserva - El ID de la reserva que se desea cancelar.
     // @param {string} id_usuario - El ID del usuario que realizó la reserva.
     // @returns {Object} Un objeto con un mensaje de éxito al cancelar la reserva.
-    async cancelarReserva(id_reservA, id_usuariO) {
+
+    async cancelarReserva(id_reservA, id_usuariO, res) {
         await this.open();
 
         try {
             this.collectionReserva = this.db.collection('reserva');
             const collectionAsiento = this.db.collection('asiento');
 
-            // ? Verificar la existencia de la reserva y que pertenece al usuario
+            // Verificar la existencia de la reserva y que pertenece al usuario
             const reserva = await this.collectionReserva.findOne({
                 _id: new ObjectId(id_reservA.id_reserva),
                 id_usuario: new ObjectId(id_usuariO.id_usuario)
@@ -98,35 +100,36 @@ module.exports = class reserva extends connect {
 
             // Si la reserva no existe o no pertenece al usuario, arroja un error.
             if (!reserva) {
-                throw new Error('La reserva proporcionada no existe o no pertenece al usuario.');
+                return res.status(404).send({ mensaje: 'La reserva proporcionada no existe o no pertenece al usuario.' });
             }
 
-            //  Si la reserva ya fue cancelada, arroja un error.
+            // Si la reserva ya fue cancelada, arroja un error.
             if (reserva.estado === 'cancelado') {
-                throw new Error('La reserva ya ha sido cancelada.');
+                return res.status(400).send({ mensaje: 'La reserva ya ha sido cancelada.' });
             }
 
-            // * Actualizar el estado de la reserva a "cancelado"
+            // Actualizar el estado de la reserva a "cancelado"
             await this.collectionReserva.updateOne(
                 { _id: new ObjectId(id_reservA.id_reserva) },
                 { $set: { estado: 'cancelado' } }
             );
 
-            // * Actualizar la disponibilidad de los asientos a "disponible"
+            // Actualizar la disponibilidad de los asientos a "disponible"
             await collectionAsiento.updateMany(
                 { _id: { $in: reserva.asientos } },
                 { $set: { disponibilidad: 'disponible' } }
             );
 
-            this.connection.close();
-            return { message: 'Reserva cancelada con éxito' };
+            await this.connection.close();
+            return res.status(200).send({ mensaje: 'Reserva cancelada con éxito' });
 
         } catch (error) {
-            //  Capturar y manejar cualquier error que ocurra durante la operación
+            // Manejo de errores y cierre de conexión
             if (this.connection) {
                 await this.connection.close();
             }
-            console.log(error);
+            console.error(error);
+            return res.status(500).send({ mensaje: 'Error en el servidor. Inténtalo de nuevo más tarde.' });
         }
     }
 }
