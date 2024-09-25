@@ -1,11 +1,59 @@
-const funcion = require('./server/js/controller/horario_funcionController');
-const pelicula = require('./server/js/controller/peliculaController');
-const boleta = require('./server/js/controller/boletaController');
-const asiento = require('./server/js/controller/asientoController');
-const reserva = require('./server/js/controller/reservaController');
-const usuario = require('./server/js/controller/usuarioController');
-const tarjeta = require('./server/js/controller/tarjetaController');
-const sala = require('./server/js/controller/salaController');
+const express = require('express');
+const indexRouter = require('./server/router/indexRouter')
+// const log_In_Router = require('./server/router/loginRouter')
+const sign_Up_Router = require('./server/router/signUpRouter')
+
+
+const app = express();
+const { join } = require('path');
+
+const Database = require('./server/database/databaseMongo')
+
+Database.getInstance()
+
+app.use('/css', express.static(join( process.env.EXPRESS_STATIC, 'css')));
+app.use('/js', express.static(join( process.env.EXPRESS_STATIC, 'js')));
+app.use('/storage', express.static(join( process.env.EXPRESS_STATIC, 'storage')));
+
+
+
+app.use("/", indexRouter);
+// app.use("/login",  log_In_Router);
+app.use("/createAccount", sign_Up_Router);
+
+
+app.use((req, res) => {
+    res.status(404).json({ message: "The endpoint is not available" });
+});
+
+let config = {
+    port: process.env.EXPRESS_PORT,
+    host: process.env.EXPRESS_HOST_NAME
+}
+app.listen(config, () => {
+    console.log(`${process.env.EXPRESS_PROTOCOL}${config.host}:${config.port}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const funcion = require('./server/js/controller/horario_funcionController');
+// const pelicula = require('./server/js/controller/peliculaController');
+// const boleta = require('./server/js/controller/boletaController');
+// const asiento = require('./server/js/controller/asientoController');
+// const reserva = require('./server/js/controller/reservaController');
+// const usuario = require('./server/js/controller/usuarioController');
+// const tarjeta = require('./server/js/controller/tarjetaController');
+// const sala = require('./server/js/controller/salaController');
 
 
 // let obj = new funcion();
@@ -92,7 +140,7 @@ const sala = require('./server/js/controller/salaController');
 
 
 
-let obj = new usuario();
+// let obj = new usuario();
 
 // let newUser = {
 //     nombre: "lolitaa",
@@ -107,7 +155,7 @@ let obj = new usuario();
 
 
 
-let id_usuariO = { id_usuario: '66d853b0419398a541eced2f'}
+// let id_usuariO = { id_usuario: '66d853b0419398a541eced2f'}
     
 // let updateData =
 // {
@@ -121,7 +169,7 @@ let id_usuariO = { id_usuario: '66d853b0419398a541eced2f'}
     
 // obj.updateUser(id_usuariO,updateData).then(res=>{console.log(res)})
 
-obj.consultarUsuario(id_usuariO).then(res=>{console.log(res)})
+// obj.consultarUsuario(id_usuariO).then(res=>{console.log(res)})
 
 // obj.consultarUsuarios().then(res=>{console.log(res)})
 

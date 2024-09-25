@@ -10,7 +10,10 @@
   "author": "Nicoll Zarai Mantilla Miranda",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^6.8.0"
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.0",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.6.3"
   },
   "description": "cineCampus"
 }
