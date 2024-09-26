@@ -2,7 +2,7 @@ const express = require('express');
 const indexRouter = require('./server/router/indexRouter')
 // const log_In_Router = require('./server/router/loginRouter')
 const sign_Up_Router = require('./server/router/signUpRouter')
-const funcion_Router = require('./server/router/funcionRouter')
+const pelicula_Router = require('./server/router/peliculaRouter')
 
 
 const app = express();
@@ -21,7 +21,7 @@ app.use('/storage', express.static(join( process.env.EXPRESS_STATIC, 'storage'))
 app.use("/", indexRouter);
 // app.use("/login",  log_In_Router);
 app.use("/createAccount", sign_Up_Router);
-app.use("/funcion", funcion_Router);
+app.use("/pelicula", pelicula_Router);
 
 
 app.use((req, res) => {

@@ -28,31 +28,14 @@
         </div>
 
         <!-- Now Playing Section -->
-        <div class="mb-6 md:mb-8">
+        <div class="mb-6 md:mb-8" id="now-playing-section">
             <div class="flex justify-between items-center px-4 md:px-6 mb-2 md:mb-4">
                 <h2 class="text-lg md:text-xl font-semibold">Now playing</h2>
                 <a href="#" class="text-xs md:text-sm text-red-500">See all</a>
             </div>
             <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="../storage/img/minion.webp" alt="Movie 1" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../storage/img/joker.webp" alt="Movie 2" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../storage/img/minion.webp" alt="Movie 3" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../storage/img/minion.webp" alt="Movie 4" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../storage/img/minion.webp" alt="Movie 5" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../storage/img/minion.webp" alt="Movie 6" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
-                    </div>
+                <div class="swiper-wrapper" id="swiper-wrapper">
+                    <!-- Las películas se agregarán aquí dinámicamente -->
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -89,6 +72,43 @@
         </div>
     </div>
     <script>
+async function fetchPeliculas() {
+    try {
+        // Actualiza la URL del endpoint
+        const response = await fetch('http://localhost:5000/pelicula/v1/');
+        
+        // Verifica si la respuesta es correcta
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+
+        // Convierte la respuesta en formato JSON
+        const data = await response.json();
+
+        // Verifica si el estado es 200 y muestra los datos
+        if (data.status === 200) {
+            displayPeliculas(data.data); // Llama a la función para mostrar las películas
+        } else {
+            console.error(data.message); // En caso de error, imprime el mensaje del backend
+        }
+    } catch (error) {
+        console.error('Error al obtener las películas:', error); // Captura cualquier error en la solicitud
+    }
+}
+
+    function displayPeliculas(peliculas) {
+        const swiperWrapper = document.getElementById('swiper-wrapper');
+
+        peliculas.forEach(pelicula => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            slide.innerHTML = `
+                <img src="${pelicula.poster}" alt="${pelicula.titulo}" class="w-full h-48 md:h-64 lg:h-72 object-cover rounded-lg">
+            `;
+            swiperWrapper.appendChild(slide);
+        });
+
+        // Inicializa el Swiper después de agregar las películas
         var swiper = new Swiper(".mySwiper", {
             slidesPerView: 1.2,
             spaceBetween: 10,
@@ -109,6 +129,12 @@
                 },
             },
         });
+    }
+
+    // Llamamos a la función para obtener las películas al cargar la página
+    document.addEventListener('DOMContentLoaded', fetchPeliculas);
+
     </script>
+    
 </body>
 </html>

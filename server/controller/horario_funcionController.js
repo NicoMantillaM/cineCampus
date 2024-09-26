@@ -35,7 +35,7 @@ const getFuncionCartelera = async (req, res) => {
         }
       }
     ]);
-
+    
     // Si no se encuentran funciones, retornar un estado 404
     if (funciones.length === 0) {
       return res.status(404).send({ status: 404, message: "No hay funciones en cartelera" });

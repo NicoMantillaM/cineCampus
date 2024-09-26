@@ -1,10 +1,10 @@
-const layout = require('express').Router();
-// const cookieParser = require('cookie-parser');
-// const { authLogged } = require('../middleware/authCookies');
-const { join } = require('path')
+// const layout = require('express').Router();
+// // const cookieParser = require('cookie-parser');
+// // const { authLogged } = require('../middleware/authCookies');
+// const { join } = require('path')
  
-layout.get("/", (req, res) => { 
-    res.sendFile(join(process.env.EXPRESS_STATIC, '/views/welcome.html'));
-})
+// layout.get("/", (req, res) => { 
+//     res.sendFile(join(process.env.EXPRESS_STATIC, '/views/welcome.html'));
+// })
 
-module.exports = layout;
+// module.exports = layout;
