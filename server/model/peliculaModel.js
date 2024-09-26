@@ -6,7 +6,8 @@ const peliculaSchema = new mongoose.Schema({
     genero: String,
     duracion: Number,
     sinopsis: String,
-    estado: String
+    estado: String,
+    poster: String
 }, 
 {
     versionKey: false
