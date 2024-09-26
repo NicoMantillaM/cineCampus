@@ -14,8 +14,7 @@ document.getElementById('signup-form').addEventListener("submit", async (e) => {
             password: document.getElementById("password").value,
             nombre: document.getElementById("nombre").value,
             apellido: document.getElementById("apellido").value,
-            telefono: document.getElementById("telefono").value,
-            rol: document.getElementById("rol").value,
+            telefono: document.getElementById("telefono").value
         }),
     });
 

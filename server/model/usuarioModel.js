@@ -8,7 +8,6 @@ const usuarioSchema = new mongoose.Schema({
     nickname: String,
     telefono: String,
     password: String,
-    rol: String
 }, 
 {
     versionKey: false
