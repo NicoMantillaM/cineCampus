@@ -8,11 +8,11 @@ const getpeliculaCartelera = async (req, res) => {
     };
 
     // Realizar la consulta a la base de datos y seleccionar solo los campos 'estado' y 'poster'
-    const peliculas = await Pelicula.find(filtros).select('titulo genero poster');
+    const peliculas = await Pelicula.find(filtros).select('titulo genero poster estado');
 
     // Si no se encuentran películas, retornar un estado 404
     if (peliculas.length === 0) {
-      return res.status(404).send({ status: 404, message: "No se encontraron películas con los filtros aplicados" });
+      return res.status(404).send({ status: 404, message: "No se encontraron películas en cartelera" });
     }
 
     // Retornar las películas encontradas
@@ -21,13 +21,34 @@ const getpeliculaCartelera = async (req, res) => {
   } catch (error) {
     console.error(error);
     // Retornar un error 500 en caso de fallo
-    return res.status(500).send({ status: 500, message: "Error al obtener las películas" });
+    return res.status(500).send({ status: 500, message: "Error al obtener las películas en catelera" });
   }
 };
 
-module.exports = { getpeliculaCartelera };
+const getPeliculaById = async (req, res) => {
+  try {
+    // Extraer el id_pelicula del objeto req.params o req.body según corresponda
+    const { id_pelicula } = req.params; // Asegúrate de que el ID está en los parámetros de la URL
 
+    // Buscar la película por su ID usando Mongoose
+    const pelicula = await Pelicula.findById(id_pelicula);
 
+    // Si no se encuentra la película, retornar un estado 404
+    if (!pelicula) {
+      return res.status(404).send({ status: 404, message: "La película que ingresó no existe" });
+    }
+
+    // Si la película se encuentra, retornar la película con un estado 200
+    return res.status(200).send({ status: 200, message: "Película encontrada", data: pelicula });
+    
+  } catch (error) {
+    console.error(error);
+    // En caso de error interno, retornar un estado 500
+    return res.status(500).send({ status: 500, message: "Error interno del servidor" });
+  }
+};
+
+module.exports = { getpeliculaCartelera, getPeliculaById };
 
 
 // const connect = require('../../db/connect/connect');
