@@ -27,28 +27,28 @@ const getpeliculaCartelera = async (req, res) => {
 
 const getPeliculaById = async (req, res) => {
   try {
-    // Extraer el id_pelicula del objeto req.params o req.body según corresponda
-    const { id_pelicula } = req.params; // Asegúrate de que el ID está en los parámetros de la URL
+    const { id } = req.params;
+    console.log('ID recibido:', id);
 
-    // Buscar la película por su ID usando Mongoose
-    const pelicula = await Pelicula.findById(id_pelicula);
+    const pelicula = await Pelicula.findById(id);
+    console.log('Película encontrada:', pelicula);
 
-    // Si no se encuentra la película, retornar un estado 404
     if (!pelicula) {
-      return res.status(404).send({ status: 404, message: "La película que ingresó no existe" });
+      console.log('Película no encontrada');
+      return res.status(404).send({ status: 404, message: "Película no encontrada" });
     }
 
-    // Si la película se encuentra, retornar la película con un estado 200
+    console.log('Enviando respuesta exitosa');
     return res.status(200).send({ status: 200, message: "Película encontrada", data: pelicula });
     
   } catch (error) {
-    console.error(error);
-    // En caso de error interno, retornar un estado 500
+    console.error('Error en getPeliculaById:', error);
     return res.status(500).send({ status: 500, message: "Error interno del servidor" });
   }
 };
 
 module.exports = { getpeliculaCartelera, getPeliculaById };
+
 
 
 // const connect = require('../../db/connect/connect');

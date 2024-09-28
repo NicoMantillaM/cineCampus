@@ -1,5 +1,5 @@
 let uri =  `${location.href}/v1`;
-
+console.log(uri);
 async function fetchPeliculas() {
     try {
         const response = await fetch(uri);
@@ -31,34 +31,35 @@ function displayPeliculas(peliculas) {
         if (pelicula.estado === 'cartelera') {
             const slide = document.createElement('div');
             slide.className = 'swiper-slide flex flex-col items-center';
+            slide.setAttribute('data-id', pelicula._id);
 
             slide.innerHTML = `
                 <img src="${pelicula.poster}" alt="${pelicula.titulo}" class="movie-poster rounded-lg mb-3">
                 <div class="text-center">
                     <h3 class="font-semibold mb-2">${pelicula.titulo}</h3>
                     <p class="text-xs text-gray-400">${pelicula.genero}</p>
-                    <button class="mt-2 px-4 py-2 bg-red-500 text-white rounded-full text-sm movie-details-btn" data-id="${pelicula._id}">Ver detalles</button>
                 </div>
             `;
 
+            slide.addEventListener('click', handleMovieClick);
             nowPlayingWrapper.appendChild(slide);
         } else if (pelicula.estado === 'proximamente') {
             const comingSoonMovie = document.createElement('div');
             comingSoonMovie.className = 'flex items-center space-x-4 mb-4';
+            comingSoonMovie.setAttribute('data-id', pelicula._id);
 
             comingSoonMovie.innerHTML = `
                 <img src="${pelicula.poster}" alt="${pelicula.titulo}" class="w-24 h-32 object-cover rounded-lg">
                 <div>
                     <h3 class="font-semibold">${pelicula.titulo}</h3>
                     <p class="text-xs text-gray-400">${pelicula.genero}</p>
-                    <button class="mt-2 px-4 py-2 bg-red-500 text-white rounded-full text-sm movie-details-btn" data-id="${pelicula._id}">Ver detalles</button>
                 </div>
             `;
 
+            comingSoonMovie.addEventListener('click', handleMovieClick);
             comingSoonSection.appendChild(comingSoonMovie);
         }
     });
-
 
     // Configurar el Swiper para la sección de "Now Playing"
     new Swiper('.mySwiper', {
@@ -96,8 +97,9 @@ function displayPeliculas(peliculas) {
     });
 }
 
-async function handleMovieDetailsClick(e) {
-    const movieId = e.target.getAttribute('data-id');
+
+async function handleMovieClick(e) {
+    const movieId = e.currentTarget.getAttribute('data-id');
     try {
         const response = await fetch(`${uri}/${movieId}`);
         
@@ -108,9 +110,11 @@ async function handleMovieDetailsClick(e) {
         const data = await response.json();
 
         if (data.status === 200) {
-            // Aquí puedes manejar los detalles de la película
             console.log('Detalles de la película:', data.data);
-            // Por ejemplo, podrías mostrar los detalles en un modal o redirigir a una página de detalles
+            
+            localStorage.setItem('movieDetails', JSON.stringify(data.data));
+
+            window.location.href = '/detalles';
         } else {
             console.error(data.message);
             alert('No se pudo obtener los detalles de la película');
@@ -121,5 +125,4 @@ async function handleMovieDetailsClick(e) {
     }
 }
 
-// Llamar a fetchPeliculas cuando se carga la página
 document.addEventListener('DOMContentLoaded', fetchPeliculas);
