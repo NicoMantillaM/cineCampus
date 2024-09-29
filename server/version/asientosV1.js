@@ -1,10 +1,8 @@
 const asiento = require('express').Router();
+const { getFunctionsForMovie, getSeatsForRoomAndFunction, getRoomDetails } = require('../controller/asientoController');
 
-const  { consultarDisponibilidadAsientos, getFunctionsForMovie, getRoomForFunction, getSeatsForRoomAndFunction } = require('../controller/asientoController');
-
-asiento.get("/asientos", consultarDisponibilidadAsientos)
 asiento.get('/functions/:movieId', getFunctionsForMovie);
-asiento.get('/rooms/:functionId', getRoomForFunction);
 asiento.get('/seats/:roomId/:functionId', getSeatsForRoomAndFunction);
+asiento.get('/rooms/:roomId', getRoomDetails);
 
 module.exports = asiento;
