@@ -104,12 +104,6 @@
     </div>
 
     <script>
-        document.getElementById('book-now-btn').addEventListener('click', function() {
-            window.location.href = '/seat';
-        });
-    </script>
-
-    <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const id = new URL(window.location.href).searchParams.get("id");
 
@@ -160,6 +154,10 @@
             } catch (error) {
                 console.error('Error al obtener los detalles de la película:', error);
             }
+            // Update the "Book Now" button click handler
+            document.getElementById('book-now-btn').addEventListener('click', function() {
+                window.location.href = `/seat?movieId=${id}`;
+            });
         });
     </script>
 </body>

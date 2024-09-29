@@ -9,15 +9,19 @@
     <style>
         .seat-preferential {
             background-color: #4A5568;
-            border: 2px solid #ED8936;
+            border: 4px solid #f88222;
         }
 
         .seat {
-            width: 24px;
-            height: 24px;
-            margin: 2px;
+            width: 32px;
+            height: 32px;
+            margin: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .seat:hover:not(:disabled) {
@@ -31,16 +35,55 @@
 
         @media (max-width: 640px) {
             .seat {
-                width: 20px;
-                height: 20px;
-                margin: 1px;
+                width: 28px;
+                height: 28px;
+                margin: 3px;
+                font-size: 12px;
+            }
+        }
+
+        .seat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            justify-content: center;
+        }
+
+        .row-label {
+            width: 24px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .seat-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        #seatGrid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .responsive-container {
+                display: flex;
+            }
+            .seat-section {
+                width: 60%;
+                padding-right: 2rem;
+            }
+            .info-section {
+                width: 40%;
             }
         }
     </style>
 </head>
 
 <body class="bg-black text-white min-h-screen p-4">
-    <div class="max-w-md mx-auto sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+    <div class="max-w-7xl mx-auto">
         <div class="flex items-center justify-between mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -54,50 +97,56 @@
             </svg>
         </div>
 
-        <div class="relative mb-8">
-            <img src="../storage/img/seat.svg" alt="Screen" class="w-full mb-4">
-        </div>
+        <div class="responsive-container">
+            <div class="seat-section">
+                <div class="relative mb-8">
+                    <img src="../storage/img/seat.svg" alt="Screen" class="w-full mb-4">
+                </div>
 
-        <div id="datesList" class="flex overflow-x-auto space-x-2 mb-6">
-            <!-- Dates will be dynamically inserted here -->
-        </div>
+                <div id="seatGrid" class="mb-8">
+                    <!-- Seats will be dynamically inserted here -->
+                </div>
 
-        <div id="functionsList" class="grid grid-cols-2 gap-2 mb-6">
-            <!-- Functions will be dynamically inserted here -->
-        </div>
-
-        <div id="seatGrid" class="grid grid-cols-8 gap-1 sm:gap-2 mb-8">
-            <!-- Seats will be dynamically inserted here -->
-        </div>
-
-        <div class="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-4">
-            <div class="flex items-center mb-2">
-                <div class="w-4 h-4 bg-gray-400 rounded-sm mr-2"></div>
-                <span class="text-xs sm:text-sm">Available</span>
+                <div class="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="w-5 h-5 bg-gray-400 rounded-sm mr-2"></div>
+                        <span class="text-xs sm:text-sm">Available</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <div class="w-5 h-5 bg-gray-600 rounded-sm mr-2"></div>
+                        <span class="text-xs sm:text-sm">Reserved</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <div class="w-5 h-5 bg-red-600 rounded-sm mr-2"></div>
+                        <span class="text-xs sm:text-sm">Selected</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <div class="w-5 h-5 seat-preferential rounded-sm mr-2"></div>
+                        <span class="text-xs sm:text-sm">Preferential</span>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center mb-2">
-                <div class="w-4 h-4 bg-gray-600 rounded-sm mr-2"></div>
-                <span class="text-xs sm:text-sm">Reserved</span>
-            </div>
-            <div class="flex items-center mb-2">
-                <div class="w-4 h-4 bg-red-600 rounded-sm mr-2"></div>
-                <span class="text-xs sm:text-sm">Selected</span>
-            </div>
-            <div class="flex items-center mb-2">
-                <div class="w-4 h-4 seat-preferential rounded-sm mr-2"></div>
-                <span class="text-xs sm:text-sm">Preferential</span>
+
+            <div class="info-section">
+                <div id="datesList" class="flex overflow-x-auto space-x-2 mb-6">
+                    <!-- Dates will be dynamically inserted here -->
+                </div>
+
+                <div id="functionsList" class="grid grid-cols-2 gap-2 mb-6">
+                    <!-- Functions will be dynamically inserted here -->
+                </div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-base sm:text-lg font-semibold">Price</p>
+                    <p id="totalPrice" class="text-xl sm:text-2xl font-bold">$0.00</p>
+                </div>
+
+                <button id="buyButton"
+                    class="w-full bg-red-600 text-white font-semibold py-2 sm:py-3 rounded-lg text-sm sm:text-base">
+                    Buy ticket
+                </button>
             </div>
         </div>
-
-        <div class="flex justify-between items-center mb-4">
-            <p class="text-base sm:text-lg font-semibold">Price</p>
-            <p id="totalPrice" class="text-xl sm:text-2xl font-bold">$0.00</p>
-        </div>
-
-        <button id="buyButton"
-            class="w-full bg-red-600 text-white font-semibold py-2 sm:py-3 rounded-lg text-sm sm:text-base">
-            Buy ticket
-        </button>
     </div>
 
     <script>
@@ -108,7 +157,16 @@
             const totalPrice = document.getElementById('totalPrice');
             const buyButton = document.getElementById('buyButton');
 
-            const movieId = '66cfec618d26b5da40f46c22'; // Replace with the actual movie ID
+            // Extract movieId from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('movieId');
+
+            if (!movieId) {
+                console.error('No movie ID found in URL');
+                alert('Error: No movie ID provided. Please go back and try again.');
+                return;
+            }
+            
             let selectedSeats = [];
 
             async function getRoomDetails(roomId) {
@@ -150,11 +208,11 @@
                     const button = document.createElement('button');
                     button.className = `flex-shrink-0 p-2 rounded-lg ${index === 0 ? 'bg-red-600' : 'bg-gray-800'}`;
                     button.innerHTML = `
-                <div class="text-center">
-                    <p class="font-semibold text-xs sm:text-sm">Date</p>
-                    <p class="text-xl sm:text-2xl font-bold">${date}</p>
-                </div>
-            `;
+                        <div class="text-center">
+                            <p class="font-semibold text-xs sm:text-sm">Date</p>
+                            <p class="text-xl sm:text-2xl font-bold">${date}</p>
+                        </div>
+                    `;
                     button.addEventListener('click', () => displayFunctions(groupedFunctions[date]));
                     datesList.appendChild(button);
                 });
@@ -178,9 +236,9 @@
                     }
 
                     button.innerHTML = `
-                <p class="text-base sm:text-lg font-bold">${func.hora_inicio || 'N/A'}</p>
-                <p class="text-xs sm:text-sm text-gray-400">${roomDetails.tipo_sala} - ${roomDetails.nombre}</p>
-            `;
+                        <p class="text-base sm:text-lg font-bold">${func.hora_inicio || 'N/A'}</p>
+                        <p class="text-xs sm:text-sm text-gray-400">${roomDetails.tipo_sala} - ${roomDetails.nombre}</p>
+                    `;
 
                     button.addEventListener('click', () => {
                         if (func.id_sala) {
@@ -203,19 +261,60 @@
                 displaySeats(seats);
             }
 
-
             function displaySeats(seats) {
                 seatGrid.innerHTML = '';
-                seats.forEach(seat => {
-                    const seatButton = document.createElement('button');
-                    seatButton.className = `seat rounded-sm ${seat.disponibilidad === 'disponible' ? 'bg-gray-400' : 'bg-gray-600'} ${seat.tipo_lugar === 'preferencial' ? 'seat-preferential' : ''}`;
-                    seatButton.disabled = seat.disponibilidad !== 'disponible';
-                    seatButton.dataset.seatId = seat._id;
-                    seatButton.dataset.price = seat.precio;
-                    seatButton.textContent = seat.lugar;
-                    seatButton.addEventListener('click', () => toggleSeatSelection(seatButton, seat));
-                    seatGrid.appendChild(seatButton);
+                
+                // Sort seats by row and number
+                seats.sort((a, b) => {
+                    const [rowA, numA] = a.lugar.split('');
+                    const [rowB, numB] = b.lugar.split('');
+                    return rowA.localeCompare(rowB) || parseInt(numA) - parseInt(numB);
                 });
+
+                // Group seats by row
+                const seatsByRow = seats.reduce((acc, seat) => {
+                    const row = seat.lugar[0];
+                    if (!acc[row]) acc[row] = [];
+                    acc[row].push(seat);
+                    return acc;
+                }, {});
+
+                // Create a container for the seats
+                const seatContainer = document.createElement('div');
+                seatContainer.className = 'grid gap-1 mb-8';
+
+                // Display seats row by row
+                Object.entries(seatsByRow).forEach(([row, rowSeats]) => {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'seat-row';
+                    
+                    // Add row label
+                    const rowLabel = document.createElement('div');
+                    rowLabel.className = 'row-label';
+                    rowLabel.textContent = row;
+                    rowDiv.appendChild(rowLabel);
+
+                    // Create seat container for this row
+                    const seatRowContainer = document.createElement('div');
+                    seatRowContainer.className = 'seat-container';
+
+                    // Add seats for this row
+                    rowSeats.forEach(seat => {
+                        const seatButton = document.createElement('button');
+                        seatButton.className = `seat rounded-sm ${seat.disponibilidad === 'disponible' ? 'bg-gray-400' : 'bg-gray-600'} ${seat.tipo_lugar === 'preferencial' ? 'seat-preferential' : ''}`;
+                        seatButton.disabled = seat.disponibilidad !== 'disponible';
+                        seatButton.dataset.seatId = seat._id;
+                        seatButton.dataset.price = seat.precio;
+                        seatButton.textContent = seat.lugar.slice(1); // Display only the seat number
+                        seatButton.addEventListener('click', () => toggleSeatSelection(seatButton, seat));
+                        seatRowContainer.appendChild(seatButton);
+                    });
+
+                    rowDiv.appendChild(seatRowContainer);
+                    seatContainer.appendChild(rowDiv);
+                });
+
+                seatGrid.appendChild(seatContainer);
             }
 
             function toggleSeatSelection(seatButton, seat) {
