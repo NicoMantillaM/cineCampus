@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .seat-preferential {
+            background-color: #4A5568;
+            border: 2px solid #ED8936;
+        }
+        .seat {
+            width: 24px;
+            height: 24px;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .seat:hover:not(:disabled) {
+            transform: scale(1.1);
+        }
+        .seat:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        @media (max-width: 640px) {
+            .seat {
+                width: 20px;
+                height: 20px;
+                margin: 1px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen p-4">
+    <div class="max-w-md mx-auto sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <div class="flex items-center justify-between mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <h1 class="text-xl font-semibold">Choose Seat</h1>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
+        </div>
+
+        <div class="relative mb-8">
+            <img src="../storage/img/seat.svg" alt="Screen" class="w-full mb-4">
+        </div>
+
+        <div id="functionsList" class="flex overflow-x-auto space-x-2 mb-6">
+            <!-- Functions will be dynamically inserted here -->
+        </div>
+
+        <div id="seatGrid" class="grid grid-cols-8 gap-1 sm:gap-2 mb-8">
+            <!-- Seats will be dynamically inserted here -->
+        </div>
+
+        <div class="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-4">
+            <div class="flex items-center mb-2">
+                <div class="w-4 h-4 bg-gray-400 rounded-sm mr-2"></div>
+                <span class="text-xs sm:text-sm">Available</span>
+            </div>
+            <div class="flex items-center mb-2">
+                <div class="w-4 h-4 bg-gray-600 rounded-sm mr-2"></div>
+                <span class="text-xs sm:text-sm">Reserved</span>
+            </div>
+            <div class="flex items-center mb-2">
+                <div class="w-4 h-4 bg-red-600 rounded-sm mr-2"></div>
+                <span class="text-xs sm:text-sm">Selected</span>
+            </div>
+            <div class="flex items-center mb-2">
+                <div class="w-4 h-4 seat-preferential rounded-sm mr-2"></div>
+                <span class="text-xs sm:text-sm">Preferential</span>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-base sm:text-lg font-semibold">Price</p>
+            <p id="totalPrice" class="text-xl sm:text-2xl font-bold">$0.00</p>
+        </div>
+
+        <button id="buyButton" class="w-full bg-red-600 text-white font-semibold py-2 sm:py-3 rounded-lg text-sm sm:text-base">
+            Buy ticket
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const functionsList = document.getElementById('functionsList');
+            const seatGrid = document.getElementById('seatGrid');
+            const totalPrice = document.getElementById('totalPrice');
+            const buyButton = document.getElementById('buyButton');
+
+            // Simulamos que tenemos un ID de película
+            const movieId = '66cfec618d26b5da40f46c22'; // Reemplaza esto con el ID real de la película
+
+            // Función para obtener las funciones de una película
+            async function getFunctions(movieId) {
+                try {
+                    const response = await fetch(`/seat/v1/functions/${movieId}`);
+                    if (!response.ok) throw new Error('Error fetching functions');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error:', error);
+                    return [];
+                }
+            }
+
+            // Función para obtener los asientos de una función
+            async function getSeats(roomId, functionId) {
+                try {
+                    const response = await fetch(`/seat/v1/seats/${roomId}/${functionId}`);
+                    if (!response.ok) throw new Error('Error fetching seats');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error:', error);
+                    return [];
+                }
+            }
+
+            // Función para mostrar las funciones
+            function displayFunctions(functions) {
+                functionsList.innerHTML = '';
+                functions.forEach(func => {
+                    const button = document.createElement('button');
+                    button.className = 'flex-shrink-0 p-2 rounded-lg bg-gray-800';
+                    button.innerHTML = `
+                        <div class="text-center">
+                            <p class="font-semibold text-xs sm:text-sm">${new Date(func.fecha_proyeccion).toLocaleDateString()}</p>
+                            <p class="text-xl sm:text-2xl font-bold">${func.hora_inicio}</p>
+                        </div>
+                    `;
+                    button.addEventListener('click', () => loadSeats(func.id_sala, func._id));
+                    functionsList.appendChild(button);
+                });
+            }
+
+            // Función para cargar y mostrar los asientos
+            async function loadSeats(roomId, functionId) {
+                const seats = await getSeats(roomId, functionId);
+                displaySeats(seats);
+            }
+
+            // Función para mostrar los asientos
+            function displaySeats(seats) {
+                seatGrid.innerHTML = '';
+                seats.forEach(seat => {
+                    const seatButton = document.createElement('button');
+                    seatButton.className = `seat rounded-sm ${seat.disponibilidad === 'disponible' ? 'bg-gray-400' : 'bg-gray-600'}`;
+                    seatButton.disabled = seat.disponibilidad !== 'disponible';
+                    seatButton.dataset.seatId = seat._id;
+                    seatButton.addEventListener('click', () => toggleSeatSelection(seatButton));
+                    seatGrid.appendChild(seatButton);
+                });
+            }
+
+            // Función para alternar la selección de asientos
+            function toggleSeatSelection(seatButton) {
+                seatButton.classList.toggle('bg-red-600');
+                updateTotalPrice();
+            }
+
+            // Función para actualizar el precio total
+            function updateTotalPrice() {
+                const selectedSeats = document.querySelectorAll('.seat.bg-red-600');
+                const price = selectedSeats.length * 5.25; // Asumimos un precio de $5.25 por asiento
+                totalPrice.textContent = `$${price.toFixed(2)}`;
+            }
+
+            // Cargar las funciones al inicio
+            getFunctions(movieId).then(displayFunctions);
+
+            // Evento para el botón de compra
+            buyButton.addEventListener('click', () => {
+                const selectedSeats = document.querySelectorAll('.seat.bg-red-600');
+                if (selectedSeats.length === 0) {
+                    alert('Por favor, selecciona al menos un asiento.');
+                } else {
+                    alert(`Has comprado ${selectedSeats.length} asiento(s). Total: ${totalPrice.textContent}`);
+                    // Aquí iría la lógica para procesar la compra
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -98,10 +98,16 @@
                 </div>
 
                 <!-- Book Now Button -->
-                <button class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg">Book Now</button>
+                <button id="book-now-btn" class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg">Book Now</button>
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('book-now-btn').addEventListener('click', function() {
+            window.location.href = '/seat';
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', async function () {

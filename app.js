@@ -4,6 +4,7 @@ const indexRouter = require('./server/router/indexRouter')
 const sign_Up_Router = require('./server/router/signUpRouter')
 const pelicula_Router = require('./server/router/peliculaRouter')
 const detalles_Router = require('./server/router/detallesRouter')
+const seat_Router = require('./server/router/asientoRouter')
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use("/", indexRouter);
 app.use("/createAccount", sign_Up_Router);
 app.use("/pelicula", pelicula_Router);
 app.use("/detalles", detalles_Router);
+app.use("/seat", seat_Router);
 
 
 
