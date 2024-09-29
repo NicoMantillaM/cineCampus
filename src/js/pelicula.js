@@ -1,5 +1,6 @@
-let uri =  `${location.href}/v1`;
+let uri = `${location.href}/v1`;
 console.log(uri);
+
 async function fetchPeliculas() {
     try {
         const response = await fetch(uri);
@@ -13,7 +14,7 @@ async function fetchPeliculas() {
         if (data.status === 200) {
             displayPeliculas(data.data);
         } else {
-            console.error(data.message);
+            console.error("Error:", data.message);
         }
     } catch (error) {
         console.error('Error al obtener las películas:', error);
@@ -30,7 +31,7 @@ function displayPeliculas(peliculas) {
     peliculas.forEach(pelicula => {
         if (pelicula.estado === 'cartelera') {
             const slide = document.createElement('div');
-            slide.className = 'swiper-slide flex flex-col items-center';
+            slide.className = 'swiper-slide flex flex-col items-center cursor-pointer transition-all duration-300 hover:opacity-80';
             slide.setAttribute('data-id', pelicula._id);
 
             slide.innerHTML = `
@@ -41,11 +42,13 @@ function displayPeliculas(peliculas) {
                 </div>
             `;
 
-            slide.addEventListener('click', handleMovieClick);
+            slide.addEventListener('click', () => {
+                window.location.href = `/detalles?id=${pelicula._id}`;
+            });
             nowPlayingWrapper.appendChild(slide);
         } else if (pelicula.estado === 'proximamente') {
             const comingSoonMovie = document.createElement('div');
-            comingSoonMovie.className = 'flex items-center space-x-4 mb-4';
+            comingSoonMovie.className = 'flex items-center space-x-4 mb-4 cursor-pointer transition-all duration-300 hover:bg-gray-800 rounded-lg p-2';
             comingSoonMovie.setAttribute('data-id', pelicula._id);
 
             comingSoonMovie.innerHTML = `
@@ -56,12 +59,14 @@ function displayPeliculas(peliculas) {
                 </div>
             `;
 
-            comingSoonMovie.addEventListener('click', handleMovieClick);
+            comingSoonMovie.addEventListener('click', () => {
+                window.location.href = `/detalles?id=${pelicula._id}`;
+            });
             comingSoonSection.appendChild(comingSoonMovie);
         }
     });
 
-    // Configurar el Swiper para la sección de "Now Playing"
+    // Configuración de Swiper
     new Swiper('.mySwiper', {
         slidesPerView: 2,
         centeredSlides: true,
@@ -95,34 +100,6 @@ function displayPeliculas(peliculas) {
             },
         },
     });
-}
-
-
-async function handleMovieClick(e) {
-    const movieId = e.currentTarget.getAttribute('data-id');
-    try {
-        const response = await fetch(`${uri}/${movieId}`);
-        
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-
-        const data = await response.json();
-
-        if (data.status === 200) {
-            console.log('Detalles de la película:', data.data);
-            
-            localStorage.setItem('movieDetails', JSON.stringify(data.data));
-
-            window.location.href = '/detalles';
-        } else {
-            console.error(data.message);
-            alert('No se pudo obtener los detalles de la película');
-        }
-    } catch (error) {
-        console.error('Error al obtener los detalles de la película:', error);
-        alert('Error al obtener los detalles de la película');
-    }
 }
 
 document.addEventListener('DOMContentLoaded', fetchPeliculas);
