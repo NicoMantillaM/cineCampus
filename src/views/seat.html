@@ -339,8 +339,8 @@
                 if (selectedSeats.length === 0) {
                     alert('Please select at least one seat.');
                 } else {
-                    alert(`You have purchased ${selectedSeats.length} seat(s). Total: ${totalPrice.textContent}`);
-                    // Here you would add the logic to process the purchase
+                    window.location.href = `/order`;
+
                 }
             });
         });

@@ -1,5 +1,28 @@
 # Clase `asiento`
 
+### .ENV:
+
+MONGO_PROTOCOL="mongodb://"
+
+MONGO_USER="manolo"
+
+MONGO_PSW="123"
+
+MONGO_HOST="junction.proxy.rlwy.net"
+
+MONGO_PORT="39027"
+
+MONGO_DB_NAME="cineCampus"
+
+EXPRESS_PROTOCOL="http://"
+
+EXPRESS_HOST_NAME="localhost"
+
+EXPRESS_PORT=5000
+
+EXPRESS_STATIC="/home/camper/Documentos/cineCampus-1/src"
+
+
 La clase `asiento` gestiona las operaciones relacionadas con los asientos en una sala de cine, como la consulta de disponibilidad y la adición de nuevos asientos en la base de datos.
 
 ## Métodos
