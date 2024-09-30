@@ -19,7 +19,7 @@ document.getElementById('signup-form').addEventListener("submit", async (e) => {
     });
 
     if (peticion.ok) {
-        window.location.href = '/pelicula';
+        window.location.href = '/login';
     } else {
         // Manejo de error
         const error = await peticion.json();
