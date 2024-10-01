@@ -4,7 +4,7 @@ const layout = require('express').Router();
 const { join } = require('path')
 
 layout.get("/", (req, res) => { 
-    res.sendFile(join(process.env.EXPRESS_STATIC, '/views/order.html'));
+    res.sendFile(join(__dirname, '../../src/views/order.html'));
 })
 
 module.exports = layout;

@@ -6,6 +6,8 @@ const sign_Up_Router = require('./server/router/signUpRouter')
 const pelicula_Router = require('./server/router/peliculaRouter')
 const detalles_Router = require('./server/router/detallesRouter')
 const seat_Router = require('./server/router/asientoRouter')
+const reserva_Router = require('./server/router/reservaRouter')
+
 // const order_Router = require('./server/router/orderRouter')
 
 
@@ -16,9 +18,12 @@ const Database = require('./server/database/databaseMongo')
 
 Database.getInstance()
 
-app.use('/css', express.static(join( process.env.EXPRESS_STATIC, 'css')));
-app.use('/js', express.static(join( process.env.EXPRESS_STATIC, 'js')));
-app.use('/storage', express.static(join( process.env.EXPRESS_STATIC, 'storage')));
+app.use('/css', express.static(join( __dirname, 'src/css')));
+app.use('/js', express.static(join( __dirname, 'src/js')));
+console.log(join( __dirname, 'src/js'));
+console.log(join( __dirname, 'src/storage'));
+
+app.use('/storage', express.static(join( __dirname, 'src/storage')));
 
 
 app.use("/", indexRouter);
@@ -27,6 +32,8 @@ app.use("/createAccount", sign_Up_Router);
 app.use("/pelicula", pelicula_Router);
 app.use("/detalles", detalles_Router);
 app.use("/seat", seat_Router);
+app.use("/reserva", reserva_Router);
+
 // app.use("/order", order_Router);
 
 

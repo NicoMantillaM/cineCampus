@@ -23,7 +23,7 @@ exports.login = async (req, res) => {
         user.password = undefined;
 
         // Crear cookie y responder con éxito
-        res.cookie('token', JSON.stringify(user), { maxAge: 1800000, httpOnly: true })
+        res.cookie('token', JSON.stringify(user), { maxAge: 1800000, httpOnly: false })
             .status(200)
             .json({ status: 200, message: "Logged in successfully", data: user });
 

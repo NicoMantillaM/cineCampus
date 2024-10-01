@@ -319,30 +319,106 @@
 
             function toggleSeatSelection(seatButton, seat) {
                 seatButton.classList.toggle('bg-red-600');
+
                 const index = selectedSeats.findIndex(s => s._id === seat._id);
-                if (index > -1) {
-                    selectedSeats.splice(index, 1);
-                } else {
+                if (index === -1) {
+                    // Seat was not selected, add it to the selectedSeats array
                     selectedSeats.push(seat);
+                } else {
+                    // Seat was already selected, remove it from the selectedSeats array
+                    selectedSeats.splice(index, 1);
                 }
+
+                // Update the total price
                 updateTotalPrice();
             }
 
             function updateTotalPrice() {
-                const price = selectedSeats.reduce((total, seat) => total + seat.precio, 0);
-                totalPrice.textContent = `$${price.toFixed(2)}`;
+                const total = selectedSeats.reduce((acc, seat) => acc + seat.precio, 0);
+                totalPrice.innerText = `$${total.toFixed(2)}`;
             }
+
+            function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(";").shift();
+            }
+        
 
             getFunctions(movieId).then(displayDates);
 
-            buyButton.addEventListener('click', () => {
-                if (selectedSeats.length === 0) {
-                    alert('Please select at least one seat.');
-                } else {
-                    window.location.href = `/order`;
+            document.getElementById('buyButton').addEventListener('click', async () => {
+            // Obtener la cookie del usuario
+// Obtener la cookie 'token'
 
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+
+            if (!token) {
+                console.error('No token found in cookies.');
+                return;
+            }
+
+            // Decodificar el token URL-encoded
+            const tokenValue = decodeURIComponent(token.split('=')[1]);
+
+            try {
+                // Parsear el token como JSON
+                const payload = JSON.parse(tokenValue);
+                console.log(payload);
+
+                // Acceder al ID del usuario
+                const userId = payload._id;
+                console.log('User ID:', userId);
+            } catch (error) {
+                console.error('Error parsing token:', error);
+            }
+
+
+
+            // Decodificar la cookie
+            // const user = JSON.parse(decodeURIComponent(cookieValue));
+
+            // Verificar si hay asientos seleccionados
+            if (!selectedSeats || selectedSeats.length === 0) {
+                alert('No seats selected');
+                return;
+            }
+
+            // Obtener el ID de la función seleccionada dinámicamente (por ejemplo, desde un dropdown o selector en el frontend)
+            const selectedFunctionId = "66cff2dc8d26b5da40f46c3d"
+
+            
+            try {
+                // Enviar la información al servidor para realizar la reserva
+                const peticion = await fetch('/reserva/v1/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id_usuario: this.userId, // ID del usuario desde la cookie
+                        asientos: selectedSeats, // Array con IDs de los asientos seleccionados
+                        id_horario_funcion: selectedFunctionId // ID de la función seleccionada
+                    }),
+                });
+
+                if (peticion.ok) {
+                    const data = await peticion.json();
+
+                    // Guardar el ID de la reserva en el localStorage
+                    localStorage.setItem('reservationId', data.reserva._id);
+
+                    alert('Reservation successful!');
+                    window.location.href = '/order'; // Redirigir a la página de confirmación
+                } else {
+                    const error = await peticion.json();
+                    alert('Failed to make reservation. ' + error.message);
                 }
-            });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error during reservation. Please try again later.');
+            }
+        });
         });
     </script>
 </body>
