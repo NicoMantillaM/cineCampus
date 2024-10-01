@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const indexRouter = require('./server/router/indexRouter')
 const log_In_Router = require('./server/router/loginRouter')
 const sign_Up_Router = require('./server/router/signUpRouter')
